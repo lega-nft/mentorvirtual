@@ -5,4 +5,5 @@ python-multipart
 fpdf
 PyPDF2
 reportlab
+itsdangerous
 python-dotenv
