@@ -56,3 +56,6 @@ async def analisar_perfil(
       </body>
     </html>
     """
+    @app.get("/")
+def raiz():
+    return {"status": "online"}
