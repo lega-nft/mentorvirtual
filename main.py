@@ -149,7 +149,7 @@ async def analisar(
 
     try:
         response = await client.chat.completions.create(
-            model="gpt-3.5-turbo-0613",
+            model="gpt-4-1106-preview",
             messages=[{"role": "user", "content": prompt}]
         )
         resposta = response.choices[0].message.content
