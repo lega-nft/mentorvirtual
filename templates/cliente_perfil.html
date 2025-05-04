@@ -5,6 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🎯 Perfil do Cliente</title>
   <link rel="stylesheet" href="/static/style.css">
+  <style>
+    body {
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #f1f1f1;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 60px auto;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    }
+    .title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 1.1rem;
+      color: #dddddd;
+      margin-bottom: 30px;
+    }
+    #perfil-content {
+      background-color: rgba(255, 255, 255, 0.08);
+      padding: 25px;
+      border-radius: 10px;
+      line-height: 1.7;
+      font-size: 15px;
+      color: #ffffff;
+      white-space: pre-wrap;
+    }
+    .button-link {
+      display: block;
+      width: fit-content;
+      margin: 30px auto 0;
+      padding: 12px 24px;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 8px;
+      text-align: center;
+      transition: background 0.3s ease;
+    }
+    .button-link:hover {
+      background: linear-gradient(to right, #0072ff, #00c6ff);
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -12,9 +67,7 @@
     <p class="subtitle">Veja abaixo sua análise personalizada:</p>
 
     <div id="perfil-content">
-      <pre style="white-space: pre-wrap; font-family: 'Segoe UI', sans-serif; color: #eee; line-height: 1.6; font-size: 15px;">
-{{ resultado|safe }}
-      </pre>
+      {{ resultado|safe }}
     </div>
 
     <a href="/menu" class="button-link">⬅️ Voltar ao Menu</a>
