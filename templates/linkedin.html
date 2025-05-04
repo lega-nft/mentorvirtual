@@ -1,42 +1,27 @@
-<!-- templates/linkedin_assistente.html -->
+<!-- templates/linkedin.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Otimização de Perfil LinkedIn</title>
+  <title>Assistente LinkedIn</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body class="gradient-bg">
   <div class="container">
-    <h1 class="title">🔗 Otimize seu Perfil no LinkedIn</h1>
-    <p class="subtitle">Preencha os campos abaixo e receba sugestões personalizadas para turbinar seu LinkedIn.</p>
+    <h1 class="title">🚀 Assistente de Otimização de LinkedIn</h1>
+    <p class="subtitle">Receba uma versão otimizada da sua bio para a seção "Sobre" do LinkedIn.</p>
     <form method="post" action="/api/otimizar-linkedin" class="form">
       <label for="nome">Nome completo:</label>
       <input type="text" id="nome" name="nome" required />
 
-      <label for="cargo_atual">Cargo atual:</label>
-      <input type="text" id="cargo_atual" name="cargo_atual" required />
+      <label for="cargo">Cargo atual:</label>
+      <input type="text" id="cargo" name="cargo" required />
 
-      <label for="objetivo">Objetivo de carreira:</label>
-      <textarea id="objetivo" name="objetivo" rows="2" required></textarea>
+      <label for="resumo">Resumo profissional atual (seção "Sobre"):</label>
+      <textarea id="resumo" name="resumo" rows="6" required></textarea>
 
-      <label for="conquistas">Principais conquistas profissionais:</label>
-      <textarea id="conquistas" name="conquistas" rows="3"></textarea>
-
-      <label for="habilidades">Habilidades técnicas e comportamentais:</label>
-      <textarea id="habilidades" name="habilidades" rows="3"></textarea>
-
-      <label for="idiomas">Idiomas que você domina:</label>
-      <input type="text" id="idiomas" name="idiomas" />
-
-      <label for="certificacoes">Certificações relevantes:</label>
-      <textarea id="certificacoes" name="certificacoes" rows="2"></textarea>
-
-      <label for="bio_atual">Resumo profissional (seção "Sobre") atual:</label>
-      <textarea id="bio_atual" name="bio_atual" rows="4"></textarea>
-
-      <button type="submit">🚀 Gerar Sugestões</button>
+      <button type="submit">🔧 Gerar Sugestão de Bio</button>
     </form>
   </div>
 </body>
