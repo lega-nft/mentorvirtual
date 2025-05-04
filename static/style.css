@@ -1,40 +1,70 @@
-body {
+/* static/style.css */
+body.gradient-bg {
+  background: linear-gradient(to right, #667eea, #764ba2);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f7f9fb;
+  color: #fff;
   margin: 0;
-  padding: 2rem;
+  padding: 0;
 }
 
 .container {
-  max-width: 800px;
-  margin: auto;
-  background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+  margin: 60px auto;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 40px;
+  border-radius: 15px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
-h1 {
-  color: #1a1a1a;
-  margin-bottom: 0.5rem;
+.title {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
-p, li {
-  color: #333;
-  line-height: 1.6;
+.subtitle {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.1rem;
 }
 
-button, .btn {
-  background-color: #22c55e;
-  color: white;
-  padding: 0.7rem 1.2rem;
+.emoji {
+  font-size: 1.8rem;
+}
+
+.form label {
+  display: block;
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.form input,
+.form textarea {
+  width: 100%;
+  padding: 10px;
   border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  text-decoration: none;
-  font-weight: 500;
+  border-radius: 8px;
+  margin-top: 8px;
+  font-size: 1rem;
+  color: #333;
 }
 
-.btn:hover {
-  background-color: #16a34a;
+.form button {
+  margin-top: 30px;
+  width: 100%;
+  padding: 12px;
+  background: #00c9ff;
+  background: linear-gradient(to right, #00c9ff, #92fe9d);
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  color: #000;
+}
+
+.form button:hover {
+  opacity: 0.9;
 }
