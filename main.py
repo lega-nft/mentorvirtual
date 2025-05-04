@@ -1,4 +1,3 @@
-
 from fastapi import FastAPI, Form, Request
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -15,6 +14,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Armazenar os resultados em memória temporariamente
 results_store = {}
+linkedin_store = {}
 
 @app.get("/")
 def homepage(request: Request):
@@ -50,6 +50,41 @@ Forneça uma análise em 4 seções:
 @app.get("/resultado")
 async def resultado(request: Request, id: str):
     data = results_store.get(id)
+    if not data:
+        return templates.TemplateResponse("resultado.html", {"request": request, "nome": "Usuário", "resultado": "Nenhum resultado disponível."})
+    return templates.TemplateResponse("resultado.html", {"request": request, "nome": data['nome'], "resultado": data['resultado']})
+
+# NOVAS ROTAS: ASSISTENTE LINKEDIN
+@app.get("/linkedin")
+async def linkedin_form(request: Request):
+    return templates.TemplateResponse("linkedin.html", {"request": request})
+
+@app.post("/api/otimizar-linkedin")
+async def otimizar_linkedin(request: Request, nome: str = Form(...), cargo: str = Form(...), resumo: str = Form(...)):
+    prompt = f"""
+Aja como um consultor de LinkedIn. Otimize o seguinte perfil profissional com um tom persuasivo, estratégico e profissional. Não invente dados, apenas melhore o que for fornecido. Use linguagem atrativa.
+
+Nome: {nome}
+Cargo atual: {cargo}
+Resumo original: {resumo}
+
+Responda com um novo texto para colocar na seção \"Sobre\" do LinkedIn.
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-4-1106-preview",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=800
+    )
+
+    resultado = response.choices[0].message.content
+    uid = str(uuid.uuid4())
+    linkedin_store[uid] = {"nome": nome, "resultado": resultado}
+    return RedirectResponse(url=f"/linkedin-resultado?id={uid}", status_code=303)
+
+@app.get("/linkedin-resultado")
+async def linkedin_resultado(request: Request, id: str):
+    data = linkedin_store.get(id)
     if not data:
         return templates.TemplateResponse("resultado.html", {"request": request, "nome": "Usuário", "resultado": "Nenhum resultado disponível."})
     return templates.TemplateResponse("resultado.html", {"request": request, "nome": data['nome'], "resultado": data['resultado']})
