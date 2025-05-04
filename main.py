@@ -7,22 +7,10 @@ from fpdf import FPDF
 from PyPDF2 import PdfReader
 from uuid import uuid4
 from starlette.middleware.sessions import SessionMiddleware
-from starlette.config import Config
-import os
-from authlib.integrations.starlette_client import OAuth, OAuthError
 import aiofiles
+import os
 
 client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-config = Config('.env')
-oauth = OAuth(config)
-oauth.register(
-    name='google',
-    client_id=os.getenv("GOOGLE_CLIENT_ID"),
-    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
-    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
-    client_kwargs={"scope": "openid email profile"}
-)
 
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET", "secret"))
@@ -35,26 +23,6 @@ app.add_middleware(
 )
 
 app.mount("/static", StaticFiles(directory="."), name="static")
-
-@app.get("/login")
-def login(request: Request):
-    redirect_uri = request.url_for('auth')
-    return oauth.google.authorize_redirect(request, redirect_uri)
-
-@app.get("/auth")
-async def auth(request: Request):
-    try:
-        token = await oauth.google.authorize_access_token(request)
-        user = token.get("userinfo")
-        request.session['user'] = user["email"]
-        return RedirectResponse("/")
-    except OAuthError:
-        return HTMLResponse("<h1>Erro na autenticação via Google.</h1>")
-
-@app.get("/logout")
-def logout(request: Request):
-    request.session.clear()
-    return RedirectResponse("/login")
 
 @app.get("/", response_class=HTMLResponse)
 def homepage(request: Request):
@@ -81,6 +49,7 @@ def homepage(request: Request):
       <h1>Mentor Virtual – Análise de Perfil Profissional</h1>
       <form action='/api/analisar' method='post' enctype='multipart/form-data'>
         <label>Nome completo</label><input type='text' name='nome' required />
+        <label>Email</label><input type='email' name='email' required />
         <label>Cargo atual</label><input type='text' name='cargo' required />
         <label>Experiência profissional</label><textarea name='experiencia' rows='4' required></textarea>
         <label>Habilidades técnicas</label><textarea name='habilidades' rows='3' required></textarea>
@@ -95,10 +64,32 @@ def homepage(request: Request):
       </form>
     </body></html>"""
 
+@app.get("/login")
+def login():
+    return HTMLResponse("""
+    <html><body>
+    <h2>Login</h2>
+    <form method='post' action='/login'>
+        <label>Email</label><input type='email' name='email' required />
+        <button type='submit'>Entrar</button>
+    </form>
+    </body></html>""")
+
+@app.post("/login")
+def login_post(request: Request, email: str = Form(...)):
+    request.session['user'] = email
+    return RedirectResponse("/", status_code=302)
+
+@app.get("/logout")
+def logout(request: Request):
+    request.session.clear()
+    return RedirectResponse("/login")
+
 @app.post("/api/analisar", response_class=HTMLResponse)
 async def analisar(
     request: Request,
     nome: str = Form(...),
+    email: str = Form(...),
     cargo: str = Form(...),
     experiencia: str = Form(...),
     habilidades: str = Form(...),
