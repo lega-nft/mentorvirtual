@@ -1,10 +1,10 @@
 from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
-import openai
+from openai import OpenAI
 import os
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 app = FastAPI()
 
@@ -18,10 +18,10 @@ app.add_middleware(
 @app.get("/", response_class=HTMLResponse)
 def homepage():
     return """
-    <html lang="pt-BR">
+    <html lang=\"pt-BR\">
     <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <meta charset=\"UTF-8\" />
+      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>
       <title>Mentor Virtual</title>
       <style>
         body {
@@ -63,40 +63,40 @@ def homepage():
     </head>
     <body>
       <h1>Mentor Virtual – Análise de Perfil Profissional</h1>
-      <form action="/api/analisar" method="post">
-        <label for="nome">Nome completo</label>
-        <input type="text" name="nome" required />
+      <form action=\"/api/analisar\" method=\"post\">
+        <label for=\"nome\">Nome completo</label>
+        <input type=\"text\" name=\"nome\" required />
 
-        <label for="cargo">Cargo atual</label>
-        <input type="text" name="cargo" required />
+        <label for=\"cargo\">Cargo atual</label>
+        <input type=\"text\" name=\"cargo\" required />
 
-        <label for="experiencia">Experiência profissional</label>
-        <textarea name="experiencia" rows="4" required></textarea>
+        <label for=\"experiencia\">Experiência profissional</label>
+        <textarea name=\"experiencia\" rows=\"4\" required></textarea>
 
-        <label for="habilidades">Habilidades técnicas</label>
-        <textarea name="habilidades" rows="3" required></textarea>
+        <label for=\"habilidades\">Habilidades técnicas</label>
+        <textarea name=\"habilidades\" rows=\"3\" required></textarea>
 
-        <label for="soft_skills">Soft Skills (comportamentais)</label>
-        <textarea name="soft_skills" rows="3" required></textarea>
+        <label for=\"soft_skills\">Soft Skills (comportamentais)</label>
+        <textarea name=\"soft_skills\" rows=\"3\" required></textarea>
 
-        <label for="objetivo">Objetivo profissional</label>
-        <input type="text" name="objetivo" required />
+        <label for=\"objetivo\">Objetivo profissional</label>
+        <input type=\"text\" name=\"objetivo\" required />
 
-        <label for="desafios">Desafios enfrentados</label>
-        <textarea name="desafios" rows="3"></textarea>
+        <label for=\"desafios\">Desafios enfrentados</label>
+        <textarea name=\"desafios\" rows=\"3\"></textarea>
 
-        <label for="linkedin">Link do seu LinkedIn</label>
-        <input type="url" name="linkedin" placeholder="https://linkedin.com/in/seuperfil" />
+        <label for=\"linkedin\">Link do seu LinkedIn</label>
+        <input type=\"url\" name=\"linkedin\" placeholder=\"https://linkedin.com/in/seuperfil\" />
 
-        <label for="preferencias">Preferências de carreira, empresa, cultura etc.</label>
-        <textarea name="preferencias" rows="3"></textarea>
+        <label for=\"preferencias\">Preferências de carreira, empresa, cultura etc.</label>
+        <textarea name=\"preferencias\" rows=\"3\"></textarea>
 
-        <button type="submit">🔍 Analisar Perfil</button>
+        <button type=\"submit\">🔍 Analisar Perfil</button>
       </form>
     </body>
     </html>
     """
-    
+
 @app.post("/api/analisar", response_class=HTMLResponse)
 async def analisar_perfil(
     nome: str = Form(...),
@@ -129,7 +129,7 @@ Você é um mentor de carreira virtual, com foco em desenvolvimento profissional
 """
 
     try:
-        resposta = openai.ChatCompletion.create(
+        resposta = client.chat.completions.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "Você é um mentor de carreira profissional."},
@@ -143,7 +143,7 @@ Você é um mentor de carreira virtual, com foco em desenvolvimento profissional
     return f"""
     <html>
       <head>
-        <meta charset="utf-8"/>
+        <meta charset=\"utf-8\"/>
         <title>Análise de Perfil</title>
         <style>
           body {{ font-family: Arial, sans-serif; padding: 2rem; max-width: 800px; margin: auto; }}
@@ -156,7 +156,7 @@ Você é um mentor de carreira virtual, com foco em desenvolvimento profissional
         <h1>Olá, {nome} 👋</h1>
         <p>Veja abaixo sua análise personalizada:</p>
         <pre>{analise}</pre>
-        <a href="/">⬅ Voltar ao formulário</a>
+        <a href=\"/\">⬅ Voltar ao formulário</a>
       </body>
     </html>
     """
