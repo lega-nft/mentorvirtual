@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -23,16 +23,16 @@ async def analisar_perfil(
     linkedin: str = Form(...),
     preferencias: str = Form(...)
 ):
-    return f"""
+    return f\"\"\"
     <html>
       <head><title>Perfil Analisado</title></head>
-      <body style="font-family:sans-serif; padding:2rem;">
+      <body style='font-family:sans-serif; padding:2rem;'>
         <h1>Olá {nome} 👋</h1>
         <p>Seu perfil foi analisado com sucesso!</p>
         <p><strong>Cargo:</strong> {cargo}</p>
         <p><strong>Objetivo:</strong> {objetivo}</p>
-        <p><strong>Próximo passo:</strong> Em breve você receberá sugestões personalizadas no seu e-mail ou LinkedIn.</p>
-        <a href="https://mentorvirtual.vercel.app" style="margin-top:2rem; display:inline-block;">⬅ Voltar ao formulário</a>
+        <p><strong>Próximo passo:</strong> Em breve enviaremos sugestões personalizadas.</p>
+        <a href='https://mentorvirtual.vercel.app'>⬅ Voltar ao formulário</a>
       </body>
     </html>
-    """
+    \"\"\"
