@@ -10,6 +10,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from starlette.config import Config
 import os
 from authlib.integrations.starlette_client import OAuth, OAuthError
+import aiofiles
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -94,6 +95,89 @@ def homepage(request: Request):
       </form>
     </body></html>"""
 
+@app.post("/api/analisar", response_class=HTMLResponse)
+async def analisar(
+    request: Request,
+    nome: str = Form(...),
+    cargo: str = Form(...),
+    experiencia: str = Form(...),
+    habilidades: str = Form(...),
+    soft_skills: str = Form(...),
+    objetivo: str = Form(...),
+    desafios: str = Form(""),
+    linkedin: str = Form(""),
+    linkedin_conteudo: str = Form(""),
+    preferencias: str = Form(""),
+    curriculo: UploadFile = File(None)
+):
+    user = request.session.get("user")
+    if not user:
+        return RedirectResponse("/login")
+
+    texto_pdf = ""
+    if curriculo:
+        try:
+            contents = await curriculo.read()
+            with open(f"temp_{uuid4()}.pdf", "wb") as f:
+                f.write(contents)
+            reader = PdfReader(f.name)
+            texto_pdf = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
+        except Exception:
+            texto_pdf = "Erro ao ler o currículo PDF."
+
+    prompt = f"""
+    Considere o seguinte perfil profissional e gere uma análise com sugestões práticas de desenvolvimento:
+
+    Nome: {nome}
+    Cargo atual: {cargo}
+    Experiência: {experiencia}
+    Habilidades técnicas: {habilidades}
+    Soft skills: {soft_skills}
+    Objetivo profissional: {objetivo}
+    Desafios enfrentados: {desafios}
+    LinkedIn: {linkedin}
+    Conteúdo do LinkedIn: {linkedin_conteudo}
+    Preferências: {preferencias}
+    Currículo extraído: {texto_pdf[:1000]}
+
+    A análise deve incluir: 
+    1. Pontos fortes identificados
+    2. Áreas de melhoria
+    3. Sugestões de desenvolvimento
+    4. Feedback empático final
+    """
+
+    try:
+        response = await client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        resposta = response.choices[0].message.content
+    except Exception as e:
+        resposta = f"Erro ao processar a análise com a IA: {e}"
+
+    # salvar histórico
+    async with aiofiles.open(f"static/historico_{user}.txt", "a") as f:
+        await f.write(f"\n===== {nome} =====\n{resposta}\n")
+
+    # gerar PDF
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    for linha in resposta.split("\n"):
+        pdf.multi_cell(0, 10, linha)
+    pdf_path = f"static/{uuid4()}.pdf"
+    pdf.output(pdf_path)
+
+    return f"""
+    <html><body>
+    <h2>Olá, {nome} 👋</h2>
+    <p>Veja abaixo sua análise personalizada:</p>
+    <pre>{resposta}</pre>
+    <a href='/{pdf_path}' download>📄 Baixar Análise em PDF</a><br><br>
+    <a href='/'>⬅ Voltar ao formulário</a>
+    </body></html>"""
+
 @app.get("/historico", response_class=HTMLResponse)
 def historico(request: Request):
     user = request.session.get("user")
@@ -105,5 +189,3 @@ def historico(request: Request):
     except:
         linhas = "Nenhum histórico encontrado."
     return f"<html><body><h2>Histórico de {user}</h2><p>{linhas}</p><a href='/'>⬅ Voltar</a></body></html>"
-
-# Permissões podem ser controladas com base no domínio do e-mail ou regras por usuário dentro de um banco futuramente
