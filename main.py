@@ -60,21 +60,30 @@ async def linkedin_form(request: Request):
     return templates.TemplateResponse("linkedin.html", {"request": request})
 
 @app.post("/api/otimizar-linkedin")
-async def otimizar_linkedin(request: Request, nome: str = Form(...), cargo: str = Form(...), resumo: str = Form(...)):
+async def otimizar_linkedin(
+    request: Request,
+    nome: str = Form(...),
+    cargo: str = Form(...),
+    resumo: str = Form(...),
+    experiencia: str = Form(...)
+):
     prompt = f"""
 Aja como um consultor de LinkedIn. Otimize o seguinte perfil profissional com um tom persuasivo, estratégico e profissional. Não invente dados, apenas melhore o que for fornecido. Use linguagem atrativa.
 
 Nome: {nome}
 Cargo atual: {cargo}
 Resumo original: {resumo}
+Experiência profissional: {experiencia}
 
-Responda com um novo texto para colocar na seção \"Sobre\" do LinkedIn.
+Responda com:
+1. Uma nova versão otimizada da seção "Sobre" do LinkedIn.
+2. Sugestões de melhoria para a seção de "Experiência Profissional", considerando estrutura, resultados mensuráveis, palavras-chave e impacto.
 """
 
     response = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[{"role": "user", "content": prompt}],
-        max_tokens=800
+        max_tokens=1000
     )
 
     resultado = response.choices[0].message.content
