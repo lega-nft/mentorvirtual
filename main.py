@@ -60,7 +60,7 @@ def homepage(request: Request):
         <label>Ou envie seu currículo (PDF)</label><input type='file' name='curriculo' accept='application/pdf' />
         <button type='submit'>🔍 Analisar Perfil</button>
       </form>
-    </body></html>"
+    </body></html>"""
 
 @app.post("/resultado", response_class=HTMLResponse)
 def resultado_page(nome: str = Form(...), resultado: str = Form(...)):
@@ -75,7 +75,7 @@ def resultado_page(nome: str = Form(...), resultado: str = Form(...)):
         body {{ font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #1f2937; padding: 2rem; max-width: 960px; margin: auto; }}
         h1 {{ font-size: 2rem; color: #111827; margin-bottom: 1.25rem; }}
         .box {{ background-color: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05); }}
-        pre {{ white-space: pre-wrap; font-size: 1rem; line-height: 1.6; color: #374151; }}
+        pre {{ white-space: pre-wrap; font-size: 1rem; line-height: 1.6; color: #374151; background-color: #f3f4f6; padding: 1rem; border-radius: 8px; }}
         a.download {{ display: inline-block; margin-top: 1.5rem; padding: 0.75rem 1.5rem; background-color: #10b981; color: #fff; border-radius: 8px; text-decoration: none; transition: background-color 0.3s; }}
         a.download:hover {{ background-color: #059669; }}
         a.voltar {{ display: inline-block; margin-top: 1.5rem; text-decoration: none; color: #2563eb; font-weight: 600; }}
