@@ -148,13 +148,11 @@ async def analisar(
     """
 
     try:
-        response = await client.chat.completions.create(
-            model="gpt-4-1106-preview",
-            messages=[{"role": "user", "content": prompt}]
-        )
-        resposta = response.choices[0].message.content
-    except Exception as e:
-        resposta = f"Erro ao processar a análise com a IA: {e}"
+completion = await client.chat.completions.create(
+    model="gpt-4.1",
+    messages=[{"role": "user", "content": prompt}]
+)
+resposta = completion.choices[0].message.content if completion.choices else "Erro: resposta vazia da IA."
 
     # salvar histórico
     async with aiofiles.open(f"static/historico_{user}.txt", "a") as f:
