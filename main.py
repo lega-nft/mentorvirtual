@@ -3,7 +3,6 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from openai import AsyncOpenAI
-from fpdf import FPDF
 from PyPDF2 import PdfReader
 from uuid import uuid4
 from starlette.middleware.sessions import SessionMiddleware
@@ -62,11 +61,10 @@ def homepage(request: Request):
       </form>
     </body></html>"""
 
-@app.post("/resultado", response_class=HTMLResponse)
+@app.get("/resultado", response_class=HTMLResponse)
 def resultado_page(request: Request):
     nome = request.session.get("nome", "Usuário")
     resultado = request.session.get("resultado", "Nenhum resultado disponível.")
-    nome_arquivo = f"analise_{nome.replace(' ', '_')}.pdf"
     return f"""
     <html lang='pt-BR'>
     <head>
@@ -79,9 +77,6 @@ def resultado_page(request: Request):
         h1 {{ font-size: 2rem; color: #111827; margin-bottom: 1.25rem; }}
         .box {{ background-color: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05); }}
         pre {{ white-space: pre-wrap; font-size: 1rem; line-height: 1.6; color: #374151; background-color: #f3f4f6; padding: 1rem; border-radius: 8px; }}
-        a.download {{ display: inline-block; margin-top: 1.5rem; padding: 0.75rem 1.5rem; background-color: #10b981; color: #fff; border-radius: 8px; text-decoration: none; transition: background-color 0.3s; }}
-        a.download:hover {{ background-color: #059669; }}
-        iframe {{ margin-top: 2rem; width: 100%; height: 600px; border: 1px solid #e5e7eb; border-radius: 8px; }}
         a.voltar {{ display: inline-block; margin-top: 1.5rem; text-decoration: none; color: #2563eb; font-weight: 600; }}
       </style>
     </head>
@@ -90,8 +85,6 @@ def resultado_page(request: Request):
         <h1>Olá, {nome} 👋</h1>
         <p>Veja abaixo sua análise personalizada:</p>
         <pre>{resultado}</pre>
-        <a href='/static/{nome_arquivo}' class='download'>📄 Baixar Análise em PDF</a><br>
-        <iframe src='/static/{nome_arquivo}'></iframe>
         <a href='/' class='voltar'>⬅ Voltar ao formulário</a>
       </div>
     </body>
@@ -149,19 +142,6 @@ async def analisar(
     )
 
     resultado = resposta.choices[0].message.content
-
-    nome_arquivo = f"analise_{nome.replace(' ', '_')}.pdf"
-
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_auto_page_break(auto=True, margin=15)
-    pdf.set_font("Arial", size=12)
-    for linha in resultado.split("\n"):
-        pdf.multi_cell(0, 10, linha)
-
-    os.makedirs("static", exist_ok=True)
-    caminho_arquivo = os.path.join("static", nome_arquivo)
-    pdf.output(caminho_arquivo)
 
     request.session["nome"] = nome
     request.session["resultado"] = resultado
