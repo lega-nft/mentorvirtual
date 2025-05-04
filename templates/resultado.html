@@ -1,48 +1,30 @@
-<!-- templates/resultado.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Resultado da Análise</title>
+  <title>Resultado</title>
   <link rel="stylesheet" href="/static/style.css" />
   <style>
     .resultado-box {
-      background: rgba(255, 255, 255, 0.12);
-      padding: 30px;
-      border-radius: 15px;
-      max-width: 900px;
-      margin: 40px auto;
-      color: #fff;
       white-space: pre-wrap;
       line-height: 1.6;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 1rem;
     }
-    .back-btn {
+    .back-button {
       display: block;
-      width: fit-content;
-      margin: 20px auto;
-      padding: 10px 20px;
-      background: linear-gradient(to right, #00c9ff, #92fe9d);
-      border: none;
-      border-radius: 8px;
-      color: #000;
-      font-weight: bold;
-      text-decoration: none;
+      margin-top: 2rem;
       text-align: center;
-      transition: opacity 0.3s;
-    }
-    .back-btn:hover {
-      opacity: 0.9;
     }
   </style>
 </head>
-<body class="gradient-bg">
-  <div class="container resultado-box">
-    <h1>Olá, {{ nome.upper() }} 👋</h1>
-    <p>Veja abaixo sua análise personalizada:</p>
-    <div>{{ resultado }}</div>
-    <a href="/" class="back-btn">⬅️ Voltar ao Formulário</a>
+<body>
+  <div class="container">
+    <h1 class="title">🔍 Resultado para {{ nome }}</h1>
+    <div class="resultado-box">{{ resultado }}</div>
+    <div class="back-button">
+      <a href="/" class="button-link">⬅ Voltar ao Início</a>
+    </div>
   </div>
 </body>
 </html>
