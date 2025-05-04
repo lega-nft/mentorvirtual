@@ -96,5 +96,67 @@ def homepage():
     </body>
     </html>
     """
+    
+@app.post("/api/analisar", response_class=HTMLResponse)
+async def analisar_perfil(
+    nome: str = Form(...),
+    cargo: str = Form(...),
+    experiencia: str = Form(...),
+    habilidades: str = Form(...),
+    soft_skills: str = Form(...),
+    objetivo: str = Form(...),
+    desafios: str = Form(""),
+    linkedin: str = Form(""),
+    preferencias: str = Form("")
+):
+    prompt = f"""
+Você é um mentor de carreira virtual, com foco em desenvolvimento profissional e orientação prática. Analise o seguinte perfil e forneça um diagnóstico completo em 4 seções:
+1. Pontos fortes identificados;
+2. Áreas de melhoria;
+3. Sugestões de desenvolvimento de carreira (como cursos, práticas, cargos e empresas);
+4. Feedback final de incentivo como um coach empático.
 
-# ... (aqui vem a rota /api/analisar já com OpenAI)
+### Dados do profissional:
+- Nome: {nome}
+- Cargo atual: {cargo}
+- Experiência: {experiencia}
+- Habilidades técnicas: {habilidades}
+- Soft skills: {soft_skills}
+- Objetivo profissional: {objetivo}
+- Desafios enfrentados: {desafios}
+- LinkedIn: {linkedin}
+- Preferências: {preferencias}
+"""
+
+    try:
+        resposta = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "Você é um mentor de carreira profissional."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        analise = resposta.choices[0].message.content.strip()
+    except Exception as e:
+        analise = f"Erro ao processar a análise com a IA: {e}"
+
+    return f"""
+    <html>
+      <head>
+        <meta charset="utf-8"/>
+        <title>Análise de Perfil</title>
+        <style>
+          body {{ font-family: Arial, sans-serif; padding: 2rem; max-width: 800px; margin: auto; }}
+          h1 {{ color: #2d2dff; }}
+          pre {{ background: #f4f4f4; padding: 1rem; border-radius: 8px; white-space: pre-wrap; }}
+          a {{ display: inline-block; margin-top: 2rem; text-decoration: none; color: white; background: #2d2dff; padding: 0.6rem 1.2rem; border-radius: 8px; }}
+        </style>
+      </head>
+      <body>
+        <h1>Olá, {nome} 👋</h1>
+        <p>Veja abaixo sua análise personalizada:</p>
+        <pre>{analise}</pre>
+        <a href="/">⬅ Voltar ao formulário</a>
+      </body>
+    </html>
+    """
