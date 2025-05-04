@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Análise de Perfil - Mentor Virtual IA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #f8f9fa;
+      color: #333;
+    }
+    header {
+      background: #2d2dff;
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    main {
+      max-width: 700px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    h1 {
+      font-size: 1.8rem;
+    }
+    label {
+      display: block;
+      margin-top: 1.5rem;
+      font-weight: 600;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 2rem;
+      background: #2d2dff;
+      color: white;
+      border: none;
+      padding: 0.9rem 1.5rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #1f1fff;
+    }
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.9rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Mentor Virtual IA</h1>
+    <p>Análise Inteligente de Perfil Profissional</p>
+  </header>
+  <main>
+    <form action="https://SEU_BACKEND_URL/api/analisar" method="POST">
+      <label for="nome">Nome completo</label>
+      <input type="text" id="nome" name="nome" required />
+
+      <label for="cargo">Cargo atual</label>
+      <input type="text" id="cargo" name="cargo" required />
+
+      <label for="experiencia">Tempo de experiência</label>
+      <input type="text" id="experiencia" name="experiencia" required />
+
+      <label for="habilidades">Habilidades técnicas (separadas por vírgula)</label>
+      <input type="text" id="habilidades" name="habilidades" required />
+
+      <label for="soft_skills">Soft skills (separadas por vírgula)</label>
+      <input type="text" id="soft_skills" name="soft_skills" required />
+
+      <label for="objetivo">Objetivo profissional</label>
+      <textarea id="objetivo" name="objetivo" rows="3" required></textarea>
+
+      <label for="desafios">Desafios que você enfrenta atualmente</label>
+      <textarea id="desafios" name="desafios" rows="3"></textarea>
+
+      <label for="linkedin">LinkedIn ou currículo (URL)</label>
+      <input type="url" id="linkedin" name="linkedin" />
+
+      <label for="preferencias">Preferência de conexões</label>
+      <select id="preferencias" name="preferencias">
+        <option value="Mentores">Mentores</option>
+        <option value="Recrutadores">Recrutadores</option>
+        <option value="Colegas da área">Colegas da área</option>
+      </select>
+
+      <button type="submit">Analisar Perfil</button>
+    </form>
+  </main>
+  <footer>
+    &copy; 2025 Mentor Virtual IA. Todos os direitos reservados.
+  </footer>
+</body>
+</html>
