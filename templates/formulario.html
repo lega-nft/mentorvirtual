@@ -1,40 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mentor Virtual</title>
-  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body class="gradient-bg">
   <div class="container">
-    <h1 class="title">🧠 Mentor Virtual</h1>
-    <p class="subtitle">Preencha o formulário abaixo para receber uma análise personalizada de perfil.</p>
-    <form method="post" action="/api/analisar" class="form">
-      <label for="nome">Nome completo:</label>
-      <input type="text" id="nome" name="nome" required />
+    <h1 class="title">🎯 Bem-vindo ao Mentor Virtual</h1>
+    <p class="subtitle">Escolha abaixo o que deseja realizar:</p>
 
-      <label for="objetivo">Objetivo profissional:</label>
-      <textarea id="objetivo" name="objetivo" rows="3" required></textarea>
-
-      <label for="experiencia">Resumo da sua experiência:</label>
-      <textarea id="experiencia" name="experiencia" rows="4" required></textarea>
-
-      <label for="habilidades">Habilidades técnicas e soft skills:</label>
-      <textarea id="habilidades" name="habilidades" rows="3" required></textarea>
-
-      <button type="submit">📊 Gerar Análise</button>
-    </form>
-
-    <hr style="margin: 40px 0; border: none; border-top: 1px solid #ffffff33;" />
-
-    <div style="text-align: center;">
-      <p style="margin-bottom: 10px;">Quer melhorar sua bio no LinkedIn?</p>
-      <a href="/linkedin">
-        <button style="padding: 12px 24px; font-size: 16px; border-radius: 8px; border: none; background: linear-gradient(to right, #00c6ff, #0072ff); color: white; cursor: pointer;">
-          🚀 Ir para o Assistente LinkedIn
-        </button>
-      </a>
+    <div class="card-grid">
+      <a class="card" href="/">📋 Análise de Perfil Profissional</a>
+      <a class="card" href="/linkedin">💼 Otimizador de Perfil LinkedIn</a>
+      <a class="card" href="/cliente">🧠 Mapeamento de Perfil do Cliente</a>
     </div>
   </div>
 </body>
