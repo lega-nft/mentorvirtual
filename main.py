@@ -61,38 +61,38 @@ def homepage(request: Request):
     if not user:
         return RedirectResponse("/login")
     return f"""
-    <html lang=\"pt-BR\">
+    <html lang='pt-BR'>
     <head>
-      <meta charset=\"UTF-8\" />
-      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>
+      <meta charset='UTF-8' />
+      <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
       <title>Mentor Virtual</title>
       <style>
         body {{ font-family: 'Segoe UI', sans-serif; background-color: #f9fafb; color: #333; padding: 2rem; max-width: 800px; margin: auto; }}
         h1 {{ color: #1d4ed8; font-size: 2rem; }}
         label {{ font-weight: 600; display: block; margin-top: 1rem; }}
         input, textarea {{ width: 100%; padding: 0.6rem; margin-top: 0.3rem; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem; }}
-        input[type=\"file\"] {{ border: none; }}
+        input[type='file'] {{ border: none; }}
         button {{ margin-top: 2rem; padding: 0.75rem 2rem; background-color: #1d4ed8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; }}
         button:hover {{ background-color: #2563eb; }}
       </style>
     </head>
     <body>
       <h1>Mentor Virtual – Análise de Perfil Profissional</h1>
-      <form action=\"/api/analisar\" method=\"post\" enctype=\"multipart/form-data\">
-        <label>Nome completo</label><input type=\"text\" name=\"nome\" required />
-        <label>Cargo atual</label><input type=\"text\" name=\"cargo\" required />
-        <label>Experiência profissional</label><textarea name=\"experiencia\" rows=\"4\" required></textarea>
-        <label>Habilidades técnicas</label><textarea name=\"habilidades\" rows=\"3\" required></textarea>
-        <label>Soft Skills</label><textarea name=\"soft_skills\" rows=\"3\" required></textarea>
-        <label>Objetivo profissional</label><input type=\"text\" name=\"objetivo\" required />
-        <label>Desafios enfrentados</label><textarea name=\"desafios\" rows=\"3\"></textarea>
-        <label>LinkedIn</label><input type=\"url\" name=\"linkedin\" />
-        <label>Conteúdo do LinkedIn (copie e cole)</label><textarea name=\"linkedin_conteudo\" rows=\"5\"></textarea>
-        <label>Preferências de carreira</label><textarea name=\"preferencias\" rows=\"3\"></textarea>
-        <label>Ou envie seu currículo (PDF)</label><input type=\"file\" name=\"curriculo\" accept=\"application/pdf\" />
-        <button type=\"submit\">🔍 Analisar Perfil</button>
+      <form action='/api/analisar' method='post' enctype='multipart/form-data'>
+        <label>Nome completo</label><input type='text' name='nome' required />
+        <label>Cargo atual</label><input type='text' name='cargo' required />
+        <label>Experiência profissional</label><textarea name='experiencia' rows='4' required></textarea>
+        <label>Habilidades técnicas</label><textarea name='habilidades' rows='3' required></textarea>
+        <label>Soft Skills</label><textarea name='soft_skills' rows='3' required></textarea>
+        <label>Objetivo profissional</label><input type='text' name='objetivo' required />
+        <label>Desafios enfrentados</label><textarea name='desafios' rows='3'></textarea>
+        <label>LinkedIn</label><input type='url' name='linkedin' />
+        <label>Conteúdo do LinkedIn (copie e cole)</label><textarea name='linkedin_conteudo' rows='5'></textarea>
+        <label>Preferências de carreira</label><textarea name='preferencias' rows='3'></textarea>
+        <label>Ou envie seu currículo (PDF)</label><input type='file' name='curriculo' accept='application/pdf' />
+        <button type='submit'>🔍 Analisar Perfil</button>
       </form>
-    </body></html>"
+    </body></html>"""
 
 @app.get("/historico", response_class=HTMLResponse)
 def historico(request: Request):
