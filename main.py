@@ -23,16 +23,16 @@ async def analisar_perfil(
     linkedin: str = Form(...),
     preferencias: str = Form(...)
 ):
-    return f\"\"\"
-    <html>
-      <head><title>Perfil Analisado</title></head>
-      <body style='font-family:sans-serif; padding:2rem;'>
-        <h1>Olá {nome} 👋</h1>
-        <p>Seu perfil foi analisado com sucesso!</p>
-        <p><strong>Cargo:</strong> {cargo}</p>
-        <p><strong>Objetivo:</strong> {objetivo}</p>
-        <p><strong>Próximo passo:</strong> Em breve enviaremos sugestões personalizadas.</p>
-        <a href='https://mentorvirtual.vercel.app'>⬅ Voltar ao formulário</a>
-      </body>
-    </html>
-    \"\"\"
+return f"""
+<html>
+  <head><title>Perfil Analisado</title></head>
+  <body style='font-family:sans-serif; padding:2rem;'>
+    <h1>Olá {nome} 👋</h1>
+    <p>Seu perfil foi analisado com sucesso!</p>
+    <p><strong>Cargo:</strong> {cargo}</p>
+    <p><strong>Objetivo:</strong> {objetivo}</p>
+    <p><strong>Próximo passo:</strong> Em breve enviaremos sugestões personalizadas.</p>
+    <a href='https://mentorvirtual.vercel.app'>⬅ Voltar ao formulário</a>
+  </body>
+</html>
+"""
