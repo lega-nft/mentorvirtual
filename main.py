@@ -12,6 +12,7 @@ import os
 
 client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+os.makedirs("static", exist_ok=True)
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET", "secret"))
 
