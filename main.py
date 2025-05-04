@@ -1,12 +1,31 @@
-from fastapi import FastAPI, Form
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Form, UploadFile, File, Request, Depends
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from openai import OpenAI
+from fpdf import FPDF
+from PyPDF2 import PdfReader
+from uuid import uuid4
+from starlette.middleware.sessions import SessionMiddleware
+from starlette.config import Config
 import os
+
+from authlib.integrations.starlette_client import OAuth, OAuthError
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+config = Config('.env')
+oauth = OAuth(config)
+oauth.register(
+    name='google',
+    client_id=os.getenv("GOOGLE_CLIENT_ID"),
+    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    client_kwargs={"scope": "openid email profile"}
+)
+
 app = FastAPI()
+app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET", "secret"))
 
 app.add_middleware(
     CORSMiddleware,
@@ -15,148 +34,77 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount("/static", StaticFiles(directory="."), name="static")
+
+@app.get("/login")
+def login(request: Request):
+    redirect_uri = request.url_for('auth')
+    return oauth.google.authorize_redirect(request, redirect_uri)
+
+@app.get("/auth")
+async def auth(request: Request):
+    try:
+        token = await oauth.google.authorize_access_token(request)
+        user = token.get("userinfo")
+        request.session['user'] = user["email"]
+        return RedirectResponse("/")
+    except OAuthError:
+        return HTMLResponse("<h1>Erro na autenticação via Google.</h1>")
+
+@app.get("/logout")
+def logout(request: Request):
+    request.session.clear()
+    return RedirectResponse("/login")
+
 @app.get("/", response_class=HTMLResponse)
-def homepage():
-    return """
+def homepage(request: Request):
+    user = request.session.get("user")
+    if not user:
+        return RedirectResponse("/login")
+    return f"""
     <html lang=\"pt-BR\">
     <head>
       <meta charset=\"UTF-8\" />
       <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>
       <title>Mentor Virtual</title>
       <style>
-        body {
-          font-family: Arial, sans-serif;
-          padding: 2rem;
-          max-width: 700px;
-          margin: auto;
-        }
-        h1 {
-          color: #2d2dff;
-          margin-bottom: 1rem;
-        }
-        label {
-          font-weight: bold;
-          display: block;
-          margin-top: 1rem;
-        }
-        input, textarea {
-          width: 100%;
-          padding: 0.6rem;
-          margin-top: 0.3rem;
-          border-radius: 6px;
-          border: 1px solid #ccc;
-        }
-        button {
-          margin-top: 2rem;
-          padding: 0.7rem 1.5rem;
-          background-color: #2d2dff;
-          color: white;
-          border: none;
-          border-radius: 8px;
-          cursor: pointer;
-          font-size: 1rem;
-        }
-        button:hover {
-          background-color: #1a1aff;
-        }
+        body {{ font-family: 'Segoe UI', sans-serif; background-color: #f9fafb; color: #333; padding: 2rem; max-width: 800px; margin: auto; }}
+        h1 {{ color: #1d4ed8; font-size: 2rem; }}
+        label {{ font-weight: 600; display: block; margin-top: 1rem; }}
+        input, textarea {{ width: 100%; padding: 0.6rem; margin-top: 0.3rem; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem; }}
+        input[type=\"file\"] {{ border: none; }}
+        button {{ margin-top: 2rem; padding: 0.75rem 2rem; background-color: #1d4ed8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; }}
+        button:hover {{ background-color: #2563eb; }}
       </style>
     </head>
     <body>
       <h1>Mentor Virtual – Análise de Perfil Profissional</h1>
-      <form action=\"/api/analisar\" method=\"post\">
-        <label for=\"nome\">Nome completo</label>
-        <input type=\"text\" name=\"nome\" required />
-
-        <label for=\"cargo\">Cargo atual</label>
-        <input type=\"text\" name=\"cargo\" required />
-
-        <label for=\"experiencia\">Experiência profissional</label>
-        <textarea name=\"experiencia\" rows=\"4\" required></textarea>
-
-        <label for=\"habilidades\">Habilidades técnicas</label>
-        <textarea name=\"habilidades\" rows=\"3\" required></textarea>
-
-        <label for=\"soft_skills\">Soft Skills (comportamentais)</label>
-        <textarea name=\"soft_skills\" rows=\"3\" required></textarea>
-
-        <label for=\"objetivo\">Objetivo profissional</label>
-        <input type=\"text\" name=\"objetivo\" required />
-
-        <label for=\"desafios\">Desafios enfrentados</label>
-        <textarea name=\"desafios\" rows=\"3\"></textarea>
-
-        <label for=\"linkedin\">Link do seu LinkedIn</label>
-        <input type=\"url\" name=\"linkedin\" placeholder=\"https://linkedin.com/in/seuperfil\" />
-
-        <label for=\"preferencias\">Preferências de carreira, empresa, cultura etc.</label>
-        <textarea name=\"preferencias\" rows=\"3\"></textarea>
-
+      <form action=\"/api/analisar\" method=\"post\" enctype=\"multipart/form-data\">
+        <label>Nome completo</label><input type=\"text\" name=\"nome\" required />
+        <label>Cargo atual</label><input type=\"text\" name=\"cargo\" required />
+        <label>Experiência profissional</label><textarea name=\"experiencia\" rows=\"4\" required></textarea>
+        <label>Habilidades técnicas</label><textarea name=\"habilidades\" rows=\"3\" required></textarea>
+        <label>Soft Skills</label><textarea name=\"soft_skills\" rows=\"3\" required></textarea>
+        <label>Objetivo profissional</label><input type=\"text\" name=\"objetivo\" required />
+        <label>Desafios enfrentados</label><textarea name=\"desafios\" rows=\"3\"></textarea>
+        <label>LinkedIn</label><input type=\"url\" name=\"linkedin\" />
+        <label>Conteúdo do LinkedIn (copie e cole)</label><textarea name=\"linkedin_conteudo\" rows=\"5\"></textarea>
+        <label>Preferências de carreira</label><textarea name=\"preferencias\" rows=\"3\"></textarea>
+        <label>Ou envie seu currículo (PDF)</label><input type=\"file\" name=\"curriculo\" accept=\"application/pdf\" />
         <button type=\"submit\">🔍 Analisar Perfil</button>
       </form>
-    </body>
-    </html>
-    """
+    </body></html>"""
 
-@app.post("/api/analisar", response_class=HTMLResponse)
-async def analisar_perfil(
-    nome: str = Form(...),
-    cargo: str = Form(...),
-    experiencia: str = Form(...),
-    habilidades: str = Form(...),
-    soft_skills: str = Form(...),
-    objetivo: str = Form(...),
-    desafios: str = Form(""),
-    linkedin: str = Form(""),
-    preferencias: str = Form("")
-):
-    prompt = f"""
-Você é um mentor de carreira virtual, com foco em desenvolvimento profissional e orientação prática. Analise o seguinte perfil e forneça um diagnóstico completo em 4 seções:
-1. Pontos fortes identificados;
-2. Áreas de melhoria;
-3. Sugestões de desenvolvimento de carreira (como cursos, práticas, cargos e empresas);
-4. Feedback final de incentivo como um coach empático.
-
-### Dados do profissional:
-- Nome: {nome}
-- Cargo atual: {cargo}
-- Experiência: {experiencia}
-- Habilidades técnicas: {habilidades}
-- Soft skills: {soft_skills}
-- Objetivo profissional: {objetivo}
-- Desafios enfrentados: {desafios}
-- LinkedIn: {linkedin}
-- Preferências: {preferencias}
-"""
-
+@app.get("/historico", response_class=HTMLResponse)
+def historico(request: Request):
+    user = request.session.get("user")
+    if not user:
+        return RedirectResponse("/login")
     try:
-        resposta = client.chat.completions.create(
-            model="gpt-3.5-turbo-1106",
-            messages=[
-                {"role": "system", "content": "Você é um mentor de carreira profissional."},
-                {"role": "user", "content": prompt}
-            ]
-        )
-        analise = resposta.choices[0].message.content.strip()
-    except Exception as e:
-        analise = f"Erro ao processar a análise com a IA: {e}"
+        with open(f"static/historico_{user}.txt") as f:
+            linhas = f.read().replace("\n", "<br>")
+    except:
+        linhas = "Nenhum histórico encontrado."
+    return f"<html><body><h2>Histórico de {user}</h2><p>{linhas}</p><a href='/'>⬅ Voltar</a></body></html>"
 
-    return f"""
-    <html>
-      <head>
-        <meta charset=\"utf-8\"/>
-        <title>Análise de Perfil</title>
-        <style>
-          body {{ font-family: Arial, sans-serif; padding: 2rem; max-width: 800px; margin: auto; }}
-          h1 {{ color: #2d2dff; }}
-          pre {{ background: #f4f4f4; padding: 1rem; border-radius: 8px; white-space: pre-wrap; }}
-          a {{ display: inline-block; margin-top: 2rem; text-decoration: none; color: white; background: #2d2dff; padding: 0.6rem 1.2rem; border-radius: 8px; }}
-        </style>
-      </head>
-      <body>
-        <h1>Olá, {nome} 👋</h1>
-        <p>Veja abaixo sua análise personalizada:</p>
-        <pre>{analise}</pre>
-        <a href=\"/\">⬅ Voltar ao formulário</a>
-      </body>
-    </html>
-    """
+# Permissões podem ser controladas com base no domínio do e-mail ou regras por usuário dentro de um banco futuramente
