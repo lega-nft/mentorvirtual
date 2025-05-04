@@ -63,7 +63,10 @@ def homepage(request: Request):
     </body></html>"""
 
 @app.post("/resultado", response_class=HTMLResponse)
-def resultado_page(nome: str = Form(...), resultado: str = Form(...)):
+def resultado_page(request: Request):
+    nome = request.session.get("nome", "Usuário")
+    resultado = request.session.get("resultado", "Nenhum resultado disponível.")
+    nome_arquivo = f"analise_{nome.replace(' ', '_')}.pdf"
     return f"""
     <html lang='pt-BR'>
     <head>
@@ -78,6 +81,7 @@ def resultado_page(nome: str = Form(...), resultado: str = Form(...)):
         pre {{ white-space: pre-wrap; font-size: 1rem; line-height: 1.6; color: #374151; background-color: #f3f4f6; padding: 1rem; border-radius: 8px; }}
         a.download {{ display: inline-block; margin-top: 1.5rem; padding: 0.75rem 1.5rem; background-color: #10b981; color: #fff; border-radius: 8px; text-decoration: none; transition: background-color 0.3s; }}
         a.download:hover {{ background-color: #059669; }}
+        iframe {{ margin-top: 2rem; width: 100%; height: 600px; border: 1px solid #e5e7eb; border-radius: 8px; }}
         a.voltar {{ display: inline-block; margin-top: 1.5rem; text-decoration: none; color: #2563eb; font-weight: 600; }}
       </style>
     </head>
@@ -86,7 +90,8 @@ def resultado_page(nome: str = Form(...), resultado: str = Form(...)):
         <h1>Olá, {nome} 👋</h1>
         <p>Veja abaixo sua análise personalizada:</p>
         <pre>{resultado}</pre>
-        <a href='/static/analise_{nome}.pdf' class='download'>📄 Baixar Análise em PDF</a><br>
+        <a href='/static/{nome_arquivo}' class='download'>📄 Baixar Análise em PDF</a><br>
+        <iframe src='/static/{nome_arquivo}'></iframe>
         <a href='/' class='voltar'>⬅ Voltar ao formulário</a>
       </div>
     </body>
@@ -158,7 +163,7 @@ async def analisar(
     caminho_arquivo = os.path.join("static", nome_arquivo)
     pdf.output(caminho_arquivo)
 
-    return RedirectResponse(url="/resultado", status_code=303).include_form_data({
-        "nome": nome,
-        "resultado": resultado
-    })
+    request.session["nome"] = nome
+    request.session["resultado"] = resultado
+
+    return RedirectResponse(url="/resultado", status_code=303)
