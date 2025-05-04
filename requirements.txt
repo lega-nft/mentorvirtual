@@ -7,5 +7,6 @@ PyPDF2
 reportlab
 authlib
 aiofiles
+jinja2
 itsdangerous>=2.0
 python-dotenv
