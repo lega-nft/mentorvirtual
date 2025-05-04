@@ -9,7 +9,6 @@ from uuid import uuid4
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.config import Config
 import os
-
 from authlib.integrations.starlette_client import OAuth, OAuthError
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -93,7 +92,7 @@ def homepage(request: Request):
         <label>Ou envie seu currículo (PDF)</label><input type=\"file\" name=\"curriculo\" accept=\"application/pdf\" />
         <button type=\"submit\">🔍 Analisar Perfil</button>
       </form>
-    </body></html>"""
+    </body></html>"
 
 @app.get("/historico", response_class=HTMLResponse)
 def historico(request: Request):
