@@ -2,24 +2,46 @@ from fastapi import FastAPI, Form, Request
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from starlette.middleware.sessions import SessionMiddleware
 from openai import OpenAI
 import os
 import uuid
 
 app = FastAPI()
+app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET", "supersecret"))
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# Armazenar os resultados em memória temporariamente
 results_store = {}
 linkedin_store = {}
 cliente_store = {}
 
 @app.get("/")
+def root_redirect():
+    return RedirectResponse("/login")
+
+@app.get("/login")
+def login_form(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+@app.post("/login")
+def login_submit(request: Request, email: str = Form(...)):
+    request.session["user"] = email
+    return RedirectResponse("/home", status_code=302)
+
+@app.get("/logout")
+def logout(request: Request):
+    request.session.clear()
+    return RedirectResponse("/login")
+
+@app.get("/home")
 def homepage(request: Request):
-    return templates.TemplateResponse("formulario.html", {"request": request})
+    user = request.session.get("user")
+    if not user:
+        return RedirectResponse("/login")
+    return templates.TemplateResponse("formulario.html", {"request": request, "user": user})
 
 @app.post("/api/analisar")
 async def analisar(request: Request, nome: str = Form(...), objetivo: str = Form(...), experiencia: str = Form(...), habilidades: str = Form(...)):
@@ -55,7 +77,6 @@ async def resultado(request: Request, id: str):
         return templates.TemplateResponse("resultado.html", {"request": request, "nome": "Usuário", "resultado": "Nenhum resultado disponível."})
     return templates.TemplateResponse("resultado.html", {"request": request, "nome": data['nome'], "resultado": data['resultado']})
 
-# NOVAS ROTAS: ASSISTENTE LINKEDIN
 @app.get("/linkedin")
 async def linkedin_form(request: Request):
     return templates.TemplateResponse("linkedin.html", {"request": request})
@@ -99,7 +120,6 @@ async def linkedin_resultado(request: Request, id: str):
         return templates.TemplateResponse("resultado.html", {"request": request, "nome": "Usuário", "resultado": "Nenhum resultado disponível."})
     return templates.TemplateResponse("resultado.html", {"request": request, "nome": data['nome'], "resultado": data['resultado']})
 
-# NOVAS ROTAS: MAPEAMENTO DE CLIENTE
 @app.get("/cliente")
 async def cliente_form(request: Request):
     return templates.TemplateResponse("cliente_perfil.html", {"request": request})
@@ -124,18 +144,15 @@ Você é um especialista em estratégia de negócios e marketing. Com base nas i
 4. Estilo de comunicação
 5. Canais preferidos
 6. Comportamentos de compra
+7. Analise as fontes fornecidas: {fontes}
+8. Sugira formas estratégicas de abordar o cliente
+9. Gere um modelo no formato: {abordagem}
 
-Além disso:
-7. Analise as fontes fornecidas como site ou perfil social (descreva o tom, posicionamento e estilo percebido): {fontes}
-8. Sugira 2 ou 3 formas estratégicas de abordar esse cliente.
-9. Gere um modelo de abordagem no formato selecionado: {abordagem}
-
----
 Segmento: {segmento}
-Dores principais: {problemas}
-Soluções oferecidas: {solucao}
+Dores: {problemas}
+Soluções: {solucao}
 Perfil típico: {perfil}
-Objetivo com o mapeamento: {objetivo}
+Objetivo: {objetivo}
 """
 
     response = client.chat.completions.create(
