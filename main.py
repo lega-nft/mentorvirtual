@@ -130,7 +130,7 @@ Você é um mentor de carreira virtual, com foco em desenvolvimento profissional
 
     try:
         resposta = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-3.5-turbo-1106",
             messages=[
                 {"role": "system", "content": "Você é um mentor de carreira profissional."},
                 {"role": "user", "content": prompt}
