@@ -114,16 +114,24 @@ async def analisar(
     if not user:
         return RedirectResponse("/login")
 
+    def limitar(texto, limite):
+        return texto[:limite] if texto else ""
+
     texto_pdf = ""
     if curriculo:
         try:
             contents = await curriculo.read()
-            with open(f"temp_{uuid4()}.pdf", "wb") as f:
+            nome_temp = f"temp_{uuid4()}.pdf"
+            with open(nome_temp, "wb") as f:
                 f.write(contents)
-            reader = PdfReader(f.name)
+            reader = PdfReader(nome_temp)
             texto_pdf = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
         except Exception:
             texto_pdf = "Erro ao ler o currículo PDF."
+
+    linkedin_conteudo = limitar(linkedin_conteudo, 500)
+    preferencias = limitar(preferencias, 300)
+    texto_pdf = limitar(texto_pdf, 1000)
 
     prompt = f"""
     Considere o seguinte perfil profissional e gere uma análise com sugestões práticas de desenvolvimento:
@@ -138,7 +146,7 @@ async def analisar(
     LinkedIn: {linkedin}
     Conteúdo do LinkedIn: {linkedin_conteudo}
     Preferências: {preferencias}
-    Currículo extraído: {texto_pdf[:1000]}
+    Currículo extraído: {texto_pdf}
 
     A análise deve incluir: 
     1. Pontos fortes identificados
@@ -148,17 +156,17 @@ async def analisar(
     """
 
     try:
-completion = await client.chat.completions.create(
-    model="gpt-4.1",
-    messages=[{"role": "user", "content": prompt}]
-)
-resposta = completion.choices[0].message.content if completion.choices else "Erro: resposta vazia da IA."
+        completion = await client.chat.completions.create(
+            model="gpt-4-1106-preview",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        resposta = completion.choices[0].message.content if completion.choices else "Erro: resposta vazia da IA."
+    except Exception as e:
+        resposta = f"Erro ao processar a análise com a IA: {e}"
 
-    # salvar histórico
     async with aiofiles.open(f"static/historico_{user}.txt", "a") as f:
         await f.write(f"\n===== {nome} =====\n{resposta}\n")
 
-    # gerar PDF
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
