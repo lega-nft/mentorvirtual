@@ -92,3 +92,73 @@ def resultado_page(nome: str = Form(...), resultado: str = Form(...)):
     </body>
     </html>
     """
+
+@app.post("/api/analisar")
+async def analisar(
+    request: Request,
+    nome: str = Form(...),
+    email: str = Form(...),
+    cargo: str = Form(...),
+    experiencia: str = Form(...),
+    habilidades: str = Form(...),
+    soft_skills: str = Form(...),
+    objetivo: str = Form(...),
+    desafios: str = Form(""),
+    linkedin: str = Form(""),
+    linkedin_conteudo: str = Form(""),
+    preferencias: str = Form(""),
+    curriculo: UploadFile = File(None)
+):
+    conteudo_cv = ""
+
+    if curriculo and curriculo.filename.endswith(".pdf"):
+        reader = PdfReader(curriculo.file)
+        conteudo_cv = "\n".join(page.extract_text() for page in reader.pages if page.extract_text())
+
+    prompt = f"""
+    Realize uma análise profissional com base nas seguintes informações do usuário:
+
+    Nome: {nome}
+    Cargo atual: {cargo}
+    Experiência: {experiencia}
+    Habilidades Técnicas: {habilidades}
+    Soft Skills: {soft_skills}
+    Objetivo Profissional: {objetivo}
+    Desafios: {desafios}
+    LinkedIn: {linkedin}
+    Conteúdo do LinkedIn: {linkedin_conteudo}
+    Preferências de Carreira: {preferencias}
+    Currículo: {conteudo_cv}
+
+    Gere:
+    1. Pontos fortes
+    2. Áreas de melhoria
+    3. Sugestões de desenvolvimento
+    4. Um feedback final encorajador
+    """
+
+    resposta = await client.chat.completions.create(
+        model="gpt-4-1106-preview",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=2000
+    )
+
+    resultado = resposta.choices[0].message.content
+
+    nome_arquivo = f"analise_{nome.replace(' ', '_')}.pdf"
+
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.set_font("Arial", size=12)
+    for linha in resultado.split("\n"):
+        pdf.multi_cell(0, 10, linha)
+
+    os.makedirs("static", exist_ok=True)
+    caminho_arquivo = os.path.join("static", nome_arquivo)
+    pdf.output(caminho_arquivo)
+
+    return RedirectResponse(url="/resultado", status_code=303).include_form_data({
+        "nome": nome,
+        "resultado": resultado
+    })
