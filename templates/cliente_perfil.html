@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mapeamento do Cliente-Alvo</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body class="gradient-bg">
+  <div class="container">
+    <h1 class="title">🔍 Mapeamento do Perfil do Cliente-Alvo</h1>
+    <p class="subtitle">Responda às perguntas abaixo para gerar um perfil detalhado do seu cliente ideal.</p>
+
+    <form method="post" action="/api/mapear-cliente" class="form">
+      <label for="segmento">Segmento de mercado / nicho:</label>
+      <input type="text" id="segmento" name="segmento" required />
+
+      <label for="problemas">Principais dores ou desafios enfrentados por seus clientes:</label>
+      <textarea id="problemas" name="problemas" rows="4" required></textarea>
+
+      <label for="solucao">Como seu produto ou serviço resolve essas dores:</label>
+      <textarea id="solucao" name="solucao" rows="4" required></textarea>
+
+      <label for="perfil">Descreva o tipo de pessoa ou empresa que costuma comprar de você:</label>
+      <textarea id="perfil" name="perfil" rows="4" required></textarea>
+
+      <label for="objetivo">Qual é o seu objetivo ao entender melhor esse perfil?</label>
+      <textarea id="objetivo" name="objetivo" rows="3" required></textarea>
+
+      <button type="submit">📈 Gerar Perfil do Cliente</button>
+    </form>
+  </div>
+</body>
+</html>
