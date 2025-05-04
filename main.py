@@ -41,6 +41,13 @@ def homepage(request: Request):
     user = request.session.get("user")
     if not user:
         return RedirectResponse("/login")
+    return templates.TemplateResponse("menu.html", {"request": request, "user": user})
+
+@app.get("/perfil")
+def perfil_form(request: Request):
+    user = request.session.get("user")
+    if not user:
+        return RedirectResponse("/login")
     return templates.TemplateResponse("formulario.html", {"request": request, "user": user})
 
 @app.post("/api/analisar")
