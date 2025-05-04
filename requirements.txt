@@ -6,5 +6,6 @@ fpdf
 PyPDF2
 reportlab
 authlib
+aiofiles
 itsdangerous>=2.0
 python-dotenv
