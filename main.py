@@ -62,7 +62,7 @@ def homepage(request: Request):
       </form>
     </body></html>"""
 
-@app.post("/resultado", response_class=HTMLResponse)
+@app.get("/resultado", response_class=HTMLResponse)
 def resultado_page(request: Request):
     nome = request.session.get("nome", "Usuário")
     resultado = request.session.get("resultado", "Nenhum resultado disponível.")
