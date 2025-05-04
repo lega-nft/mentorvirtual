@@ -35,7 +35,6 @@ def homepage(request: Request):
       <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap' rel='stylesheet'>
       <style>
         body {{ font-family: 'Inter', sans-serif; background-color: #f3f4f6; color: #111827; padding: 2rem; max-width: 960px; margin: auto; }}
-        .logo {{ width: 180px; margin-bottom: 1.5rem; }}
         h1 {{ color: #1f2937; font-size: 2.5rem; margin-bottom: 1rem; }}
         label {{ font-weight: 600; display: block; margin-top: 1rem; }}
         input, textarea {{ width: 100%; padding: 0.75rem; margin-top: 0.25rem; border-radius: 8px; border: 1px solid #d1d5db; font-size: 1rem; background-color: #fff; }}
@@ -45,7 +44,6 @@ def homepage(request: Request):
       </style>
     </head>
     <body>
-      <img src='/static/logo.png' alt='Mentor Virtual Logo' class='logo'/>
       <h1>Mentor Virtual - Análise de Perfil Profissional</h1>
       <form action='/api/analisar' method='post' enctype='multipart/form-data'>
         <label>Nome completo</label><input type='text' name='nome' required />
@@ -71,11 +69,10 @@ def resultado_page(nome: str = Form(...), resultado: str = Form(...)):
     <head>
       <meta charset='UTF-8' />
       <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
-      <title>Resultado da Análise Mentor Virtual</title>
+      <title>Resultado da Análise - Mentor Virtual</title>
       <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap' rel='stylesheet'>
       <style>
         body {{ font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #1f2937; padding: 2rem; max-width: 960px; margin: auto; }}
-        .logo {{ width: 160px; margin-bottom: 2rem; }}
         h1 {{ font-size: 2rem; color: #111827; margin-bottom: 1.25rem; }}
         .box {{ background-color: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05); }}
         pre {{ white-space: pre-wrap; font-size: 1rem; line-height: 1.6; color: #374151; }}
@@ -85,7 +82,6 @@ def resultado_page(nome: str = Form(...), resultado: str = Form(...)):
       </style>
     </head>
     <body>
-      <img src='/static/logo.png' alt='Mentor Virtual Logo' class='logo'/>
       <div class='box'>
         <h1>Olá, {nome} 👋</h1>
         <p>Veja abaixo sua análise personalizada:</p>
