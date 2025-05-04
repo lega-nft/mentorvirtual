@@ -149,7 +149,7 @@ async def analisar(
 
     try:
         completion = await client.chat.completions.create(
-            model="gpt-4-1106-preview",
+            model="gpt-3.5-turbo-0125",
             messages=[{"role": "user", "content": prompt}]
         )
         resposta = completion.choices[0].message.content if completion.choices else "Erro: resposta vazia da IA."
