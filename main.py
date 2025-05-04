@@ -1,9 +1,18 @@
-from fastapi import FastAPI, Form
+from fastapi import FastAPI, Form, Request
+from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-@app.post("/api/analisar")
-def analisar_perfil(
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.post("/api/analisar", response_class=HTMLResponse)
+async def analisar_perfil(
     nome: str = Form(...),
     cargo: str = Form(...),
     experiencia: str = Form(...),
@@ -14,7 +23,16 @@ def analisar_perfil(
     linkedin: str = Form(...),
     preferencias: str = Form(...)
 ):
-    return {
-        "mensagem": f"Olá {nome}, seu perfil foi analisado com sucesso!",
-        "proximo_passo": "Vamos recomendar conteúdos e conexões em breve."
-    }
+    return f"""
+    <html>
+      <head><title>Perfil Analisado</title></head>
+      <body style="font-family:sans-serif; padding:2rem;">
+        <h1>Olá {nome} 👋</h1>
+        <p>Seu perfil foi analisado com sucesso!</p>
+        <p><strong>Cargo:</strong> {cargo}</p>
+        <p><strong>Objetivo:</strong> {objetivo}</p>
+        <p><strong>Próximo passo:</strong> Em breve você receberá sugestões personalizadas no seu e-mail ou LinkedIn.</p>
+        <a href="https://mentorvirtual.vercel.app" style="margin-top:2rem; display:inline-block;">⬅ Voltar ao formulário</a>
+      </body>
+    </html>
+    """
