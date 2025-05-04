@@ -1,8 +1,10 @@
-from fastapi import FastAPI, Form, UploadFile, File
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 import openai
 import os
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = FastAPI()
 
@@ -12,9 +14,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Configure sua chave da OpenAI (você pode usar variáveis de ambiente no Railway)
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.post("/api/analisar", response_class=HTMLResponse)
 async def analisar_perfil(
@@ -26,60 +25,78 @@ async def analisar_perfil(
     objetivo: str = Form(...),
     desafios: str = Form(...),
     linkedin: str = Form(...),
-    preferencias: str = Form(...),
-    curriculo: UploadFile = File(...)
+    preferencias: str = Form(...)
 ):
-    conteudo_cv = await curriculo.read()
-    texto_cv = conteudo_cv.decode("utf-8", errors="ignore")
-
     prompt = f"""
-    Aja como um consultor de carreira.
-    Analise o seguinte currículo:
-    {texto_cv}
+Você é um consultor de carreira com experiência em coaching e mercado de trabalho moderno. Sua missão é analisar o perfil abaixo de maneira personalizada, suave e didática, como se estivesse guiando a pessoa em uma mentoria individual.
 
-    Perfil do LinkedIn: {linkedin}
+Dado esse perfil:
 
-    Informações adicionais:
-    Nome: {nome}
-    Cargo atual: {cargo}
-    Experiência: {experiencia}
-    Habilidades técnicas: {habilidades}
-    Soft skills: {soft_skills}
-    Objetivo de carreira: {objetivo}
-    Desafios enfrentados: {desafios}
-    Preferências de atuação: {preferencias}
+Nome: {nome}
+Cargo Atual: {cargo}
+Experiência Profissional: {experiencia}
+Habilidades Técnicas: {habilidades}
+Soft Skills: {soft_skills}
+Objetivo Profissional: {objetivo}
+Desafios Enfrentados: {desafios}
+Perfil no LinkedIn: {linkedin}
+Preferências Pessoais ou Profissionais: {preferencias}
 
-    Gere uma análise completa com:
-    - Pontos fortes
-    - Áreas a melhorar
-    - Sugestões de melhorias no currículo e LinkedIn
-    - Recomendação de próximo passo
-    - Oportunidades compatíveis com o objetivo
+Faça uma análise com os seguintes elementos:
+
+1. Visão Geral do Perfil
+2. Oportunidades de Melhoria
+3. Sugestões de Ações
+4. Próximos Passos
+5. Mensagem Final de Incentivo
+
+Use uma linguagem amigável, profissional e empática. Evite parecer genérico ou mecânico.
     """
 
-    resposta = openai.ChatCompletion.create(
-        model="gpt-4",
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}]
     )
 
-    analise = resposta["choices"][0]["message"]["content"]
+    analise = response.choices[0].message.content
 
-    return f"""
+    html_resultado = f"""
     <html>
       <head>
-        <title>Análise de Perfil</title>
+        <title>Perfil Analisado</title>
         <style>
-          body {{ font-family: Arial, sans-serif; padding: 2rem; }}
-          h1 {{ color: #2d2dff; }}
-          pre {{ background: #f4f4f4; padding: 1rem; border-radius: 8px; white-space: pre-wrap; }}
-          a {{ display: inline-block; margin-top: 2rem; text-decoration: none; color: white; background: #2d2dff; padding: 0.6rem 1.2rem; border-radius: 8px; }}
+          body {{
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+            line-height: 1.6;
+          }}
+          h1 {{
+            color: #2d2dff;
+          }}
+          a {{
+            display: inline-block;
+            margin-top: 2rem;
+            text-decoration: none;
+            color: white;
+            background: #2d2dff;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+          }}
+          pre {{
+            white-space: pre-wrap;
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 8px;
+          }}
         </style>
       </head>
       <body>
-        <h1>Olá {nome} 👋</h1>
-        <p>Aqui está sua análise completa:</p>
+        <h1>Olá {nome.upper()} 👋</h1>
+        <p>Segue abaixo a sua análise de perfil profissional com sugestões e insights personalizados:</p>
         <pre>{analise}</pre>
         <a href='https://mentorvirtual.vercel.app'>⬅ Voltar ao formulário</a>
       </body>
     </html>
     """
+
+    return html_resultado
