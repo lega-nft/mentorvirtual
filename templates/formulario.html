@@ -2,22 +2,37 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mentor Virtual</title>
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
   <div class="container">
-    <h1 class="title">💡 Mentor Virtual</h1>
-    <p class="subtitle">Escolha abaixo a ferramenta que deseja utilizar:</p>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h1 class="title">👤 Análise de Perfil Profissional</h1>
+      <a href="/logout" class="button-link">Sair</a>
+    </div>
 
-    <a href="/formulario" class="button-link">📋 Análise de Perfil Profissional</a>
-    <br><br>
+    <form method="post" action="/api/analisar" class="form">
+      <label for="nome">Nome completo:</label>
+      <input type="text" id="nome" name="nome" required />
 
-    <a href="/linkedin" class="button-link">🔧 Otimização de Perfil do LinkedIn</a>
-    <br><br>
+      <label for="objetivo">Objetivo profissional:</label>
+      <input type="text" id="objetivo" name="objetivo" required />
 
-    <a href="/cliente" class="button-link">🎯 Mapeamento de Perfil de Cliente Ideal</a>
+      <label for="experiencia">Experiência profissional:</label>
+      <textarea id="experiencia" name="experiencia" rows="4" required></textarea>
+
+      <label for="habilidades">Habilidades técnicas:</label>
+      <textarea id="habilidades" name="habilidades" rows="3" required></textarea>
+
+      <button type="submit">🔍 Analisar Perfil</button>
+    </form>
+
+    <div class="tools">
+      <a href="/linkedin" class="button-link">🧠 Assistente LinkedIn</a>
+      <a href="/cliente" class="button-link">🎯 Mapeamento de Cliente</a>
+    </div>
   </div>
 </body>
 </html>
