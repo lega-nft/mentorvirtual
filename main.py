@@ -111,22 +111,29 @@ async def mapear_cliente(
     problemas: str = Form(...),
     solucao: str = Form(...),
     perfil: str = Form(...),
-    objetivo: str = Form(...)
+    objetivo: str = Form(...),
+    fontes: str = Form(""),
+    abordagem: str = Form("Email de prospecção")
 ):
     prompt = f"""
 Você é um especialista em estratégia de negócios e marketing. Com base nas informações abaixo, gere um perfil detalhado do cliente ideal, incluindo:
 
-- Persona (nome fictício, idade, profissão)
-- Objetivos e metas
-- Dores e necessidades
-- Estilo de comunicação
-- Canais preferidos
-- Comportamentos de compra
+1. Persona (nome fictício, idade, profissão)
+2. Objetivos e metas
+3. Dores e necessidades
+4. Estilo de comunicação
+5. Canais preferidos
+6. Comportamentos de compra
 
-Informações fornecidas:
+Além disso:
+7. Analise as fontes fornecidas como site ou perfil social (descreva o tom, posicionamento e estilo percebido): {fontes}
+8. Sugira 2 ou 3 formas estratégicas de abordar esse cliente.
+9. Gere um modelo de abordagem no formato selecionado: {abordagem}
+
+---
 Segmento: {segmento}
-Dores: {problemas}
-Soluções: {solucao}
+Dores principais: {problemas}
+Soluções oferecidas: {solucao}
 Perfil típico: {perfil}
 Objetivo com o mapeamento: {objetivo}
 """
@@ -134,7 +141,7 @@ Objetivo com o mapeamento: {objetivo}
     response = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[{"role": "user", "content": prompt}],
-        max_tokens=1000
+        max_tokens=1200
     )
 
     resultado = response.choices[0].message.content
