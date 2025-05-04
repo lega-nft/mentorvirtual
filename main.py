@@ -15,6 +15,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 # Armazenar os resultados em memória temporariamente
 results_store = {}
 linkedin_store = {}
+cliente_store = {}
 
 @app.get("/")
 def homepage(request: Request):
@@ -97,3 +98,53 @@ async def linkedin_resultado(request: Request, id: str):
     if not data:
         return templates.TemplateResponse("resultado.html", {"request": request, "nome": "Usuário", "resultado": "Nenhum resultado disponível."})
     return templates.TemplateResponse("resultado.html", {"request": request, "nome": data['nome'], "resultado": data['resultado']})
+
+# NOVAS ROTAS: MAPEAMENTO DE CLIENTE
+@app.get("/cliente")
+async def cliente_form(request: Request):
+    return templates.TemplateResponse("cliente_perfil.html", {"request": request})
+
+@app.post("/api/mapear-cliente")
+async def mapear_cliente(
+    request: Request,
+    segmento: str = Form(...),
+    problemas: str = Form(...),
+    solucao: str = Form(...),
+    perfil: str = Form(...),
+    objetivo: str = Form(...)
+):
+    prompt = f"""
+Você é um especialista em estratégia de negócios e marketing. Com base nas informações abaixo, gere um perfil detalhado do cliente ideal, incluindo:
+
+- Persona (nome fictício, idade, profissão)
+- Objetivos e metas
+- Dores e necessidades
+- Estilo de comunicação
+- Canais preferidos
+- Comportamentos de compra
+
+Informações fornecidas:
+Segmento: {segmento}
+Dores: {problemas}
+Soluções: {solucao}
+Perfil típico: {perfil}
+Objetivo com o mapeamento: {objetivo}
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-4-1106-preview",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=1000
+    )
+
+    resultado = response.choices[0].message.content
+    uid = str(uuid.uuid4())
+    cliente_store[uid] = {"resultado": resultado}
+    return RedirectResponse(url=f"/cliente-resultado?id={uid}", status_code=303)
+
+@app.get("/cliente-resultado")
+async def cliente_resultado(request: Request, id: str):
+    data = cliente_store.get(id)
+    if not data:
+        return templates.TemplateResponse("resultado.html", {"request": request, "nome": "Perfil do Cliente", "resultado": "Nenhum resultado disponível."})
+    return templates.TemplateResponse("resultado.html", {"request": request, "nome": "Perfil do Cliente", "resultado": data['resultado']})
