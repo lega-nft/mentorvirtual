@@ -1,87 +1,129 @@
-/* Fundo escuro com gradiente */
+/* style.css */
+
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  color: #f1f1f1;
 }
 
-/* Container central com fundo translúcido */
 .container {
   max-width: 700px;
-  margin: 4rem auto;
-  padding: 2rem 3rem;
-  background: rgba(30, 30, 30, 0.85);
-  border-radius: 16px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
-  color: #f1f1f1;
-  font-size: 1rem;
-  font-weight: 400;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  margin: 60px auto;
+  background-color: rgba(0, 0, 0, 0.85);
+  padding: 30px 40px;
+  border-radius: 15px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* Títulos */
-.title {
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  text-align: center;
+h1.title {
+  font-size: 28px;
+  margin-bottom: 10px;
   color: #ffffff;
-}
-
-/* Subtítulo */
-.subtitle {
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
   text-align: center;
-  color: #dddddd;
 }
 
-/* Inputs e textarea */
+p.subtitle {
+  font-size: 15px;
+  text-align: center;
+  margin-bottom: 25px;
+  color: #ccc;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #ccc;
+}
+
 input[type="text"],
 input[type="email"],
+textarea,
+select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  background: #1e1e1e;
+  border: 1px solid #444;
+  color: #f1f1f1;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
 textarea {
-  width: 100%;
-  padding: 0.8rem;
-  margin-bottom: 1.2rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  background: #2c2c2c;
-  color: #ffffff;
+  resize: vertical;
 }
 
-/* Botão com gradiente */
-button {
+button[type="submit"] {
   width: 100%;
-  padding: 0.9rem;
-  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  padding: 14px;
+  font-size: 15px;
+  font-weight: bold;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #fff;
   cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-button:hover {
-  background: linear-gradient(90deg, #0072ff, #00c6ff);
-}
-
-/* Para links como botão */
-a.button-link {
-  display: inline-block;
-  text-decoration: none;
-  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
   color: #fff;
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
-  font-weight: bold;
-  transition: background 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
+  transition: all 0.3s ease;
 }
 
-a.button-link:hover {
-  background: linear-gradient(90deg, #0072ff, #00c6ff);
+button[type="submit"]:hover {
+  background: linear-gradient(90deg, #0072ff 0%, #00c6ff 100%);
+}
+
+.button-link {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 24px;
+  border-radius: 6px;
+  background: #111;
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.button-link:hover {
+  background: #333;
+}
+
+.logout {
+  text-align: right;
+  margin-bottom: -10px;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.logout a {
+  color: #f44;
+  text-decoration: none;
+  margin-left: 8px;
+}
+
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 30px;
+}
+
+.menu-buttons a {
+  text-align: center;
+  padding: 12px;
+  border-radius: 6px;
+  background: linear-gradient(to right, #434343, #000000);
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+  transition: 0.2s ease;
+}
+
+.menu-buttons a:hover {
+  background: linear-gradient(to right, #000000, #434343);
 }
