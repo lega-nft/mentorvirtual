@@ -31,7 +31,7 @@ def homepage(request: Request):
     <head>
       <meta charset='UTF-8' />
       <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
-      <title>Mentor Virtual – Análise de Perfil Profissional</title>
+      <title>Mentor Virtual - Análise de Perfil Profissional</title>
       <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap' rel='stylesheet'>
       <style>
         body {{ font-family: 'Inter', sans-serif; background-color: #f3f4f6; color: #111827; padding: 2rem; max-width: 960px; margin: auto; }}
@@ -46,7 +46,7 @@ def homepage(request: Request):
     </head>
     <body>
       <img src='/static/logo.png' alt='Mentor Virtual Logo' class='logo'/>
-      <h1>Mentor Virtual – Análise de Perfil Profissional</h1>
+      <h1>Mentor Virtual - Análise de Perfil Profissional</h1>
       <form action='/api/analisar' method='post' enctype='multipart/form-data'>
         <label>Nome completo</label><input type='text' name='nome' required />
         <label>Email</label><input type='email' name='email' required />
@@ -71,7 +71,7 @@ def resultado_page(nome: str = Form(...), resultado: str = Form(...)):
     <head>
       <meta charset='UTF-8' />
       <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
-      <title>Resultado da Análise – Mentor Virtual</title>
+      <title>Resultado da Análise - Mentor Virtual</title>
       <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap' rel='stylesheet'>
       <style>
         body {{ font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #1f2937; padding: 2rem; max-width: 960px; margin: auto; }}
