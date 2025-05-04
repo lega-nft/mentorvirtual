@@ -2,7 +2,7 @@ from fastapi import FastAPI, Form, UploadFile, File, Request, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from openai import OpenAI
+from openai import AsyncOpenAI
 from fpdf import FPDF
 from PyPDF2 import PdfReader
 from uuid import uuid4
@@ -12,7 +12,7 @@ import os
 from authlib.integrations.starlette_client import OAuth, OAuthError
 import aiofiles
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 config = Config('.env')
 oauth = OAuth(config)
