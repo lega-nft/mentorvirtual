@@ -1,29 +1,31 @@
+<!-- templates/formulario.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Mentor Virtual – Análise Profissional</title>
-    <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mentor Virtual 🧠</title>
+  <link rel="stylesheet" href="/static/style.css" />
 </head>
-<body>
-    <div class="container">
-        <h1>Mentor Virtual 🧠</h1>
-        <p>Preencha o formulário abaixo para receber uma análise personalizada de perfil.</p>
-        <form action="/api/analisar" method="post">
-            <label for="nome">Nome completo:</label><br>
-            <input type="text" id="nome" name="nome" required><br><br>
+<body class="gradient-bg">
+  <div class="container">
+    <h1 class="title">Mentor Virtual <span class="emoji">🧠</span></h1>
+    <p class="subtitle">Receba uma análise profissional personalizada em segundos.</p>
+    <form method="post" action="/api/analisar" class="form">
+      <label for="nome">Nome completo:</label>
+      <input type="text" id="nome" name="nome" required />
 
-            <label for="objetivo">Objetivo profissional:</label><br>
-            <textarea id="objetivo" name="objetivo" rows="3" required></textarea><br><br>
+      <label for="objetivo">Objetivo profissional:</label>
+      <textarea id="objetivo" name="objetivo" rows="3" required></textarea>
 
-            <label for="experiencia">Resumo da sua experiência:</label><br>
-            <textarea id="experiencia" name="experiencia" rows="4" required></textarea><br><br>
+      <label for="experiencia">Resumo da sua experiência:</label>
+      <textarea id="experiencia" name="experiencia" rows="3" required></textarea>
 
-            <label for="habilidades">Habilidades técnicas e soft skills:</label><br>
-            <textarea id="habilidades" name="habilidades" rows="4" required></textarea><br><br>
+      <label for="habilidades">Habilidades técnicas e soft skills:</label>
+      <textarea id="habilidades" name="habilidades" rows="3" required></textarea>
 
-            <button type="submit" class="btn">Gerar Análise</button>
-        </form>
-    </div>
+      <button type="submit">🚀 Gerar Análise</button>
+    </form>
+  </div>
 </body>
 </html>
