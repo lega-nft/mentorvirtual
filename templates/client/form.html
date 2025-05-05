@@ -1,1 +1,34 @@
-
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Mapeamento de Cliente</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="gradient-bg">
+  <div class="container">
+    <h1 class="title">🎯 Mapeamento de Cliente Ideal</h1>
+    <form method="post" action="/api/cliente" class="form">
+      <label>Segmento de atuação:</label>
+      <input name="segmento" required>
+      <label>Principais dores ou problemas:</label>
+      <textarea name="dores" required></textarea>
+      <label>Soluções que você oferece:</label>
+      <textarea name="solucoes" required></textarea>
+      <label>Perfil típico do cliente:</label>
+      <textarea name="perfil" required></textarea>
+      <label>Objetivo com o mapeamento:</label>
+      <textarea name="objetivo" required></textarea>
+      <label>Fontes externas:</label>
+      <input name="fontes" placeholder="https://empresa.com / perfil @cliente">
+      <label>Tipo de abordagem desejada:</label>
+      <select name="abordagem">
+        <option>Email de prospecção</option>
+        <option>Mensagem LinkedIn</option>
+        <option>Apresentação comercial</option>
+      </select>
+      <button type="submit">🚀 Gerar Perfil e Abordagem</button>
+    </form>
+  </div>
+</body>
+</html>
