@@ -38,6 +38,14 @@
     .result-section ul {
       padding-left: 20px;
     }
+    .email-block {
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid #0072ff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 15px;
+      white-space: pre-line;
+    }
     .back-button {
       display: inline-block;
       margin-top: 20px;
@@ -62,7 +70,7 @@
         {% elif bloco.startswith("3.") %}<h2>3. Dores e Necessidades</h2>
         {% elif bloco.startswith("4.") %}<h2>4. Estilo de Comunicação</h2>
         {% elif bloco.startswith("5.") %}<h2>5. Sugestões de Abordagem</h2>
-        {% elif bloco.startswith("6.") %}<h2>6. Modelos de Mensagem/Email</h2>
+        {% elif bloco.startswith("6.") %}<h2>6. Modelos de Mensagem/Email</h2><div class="email-block">{{ bloco | replace('\n', '<br>') | safe }}</div>{% continue %}
         {% else %}<h2>Detalhes</h2>{% endif %}
         <p>{{ bloco | replace('\n', '<br>') | safe }}</p>
       </div>
