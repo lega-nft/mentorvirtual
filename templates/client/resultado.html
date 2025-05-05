@@ -64,21 +64,29 @@
 
     {% set partes = resultado.split("\n\n") %}
     {% for bloco in partes %}
-      {% set is_email = bloco.startswith("6.") %}
-      <div class="result-section">
-        {% if bloco.startswith("1.") %}<h2>1. Persona Resumida</h2>
-        {% elif bloco.startswith("2.") %}<h2>2. Objetivos e Metas</h2>
-        {% elif bloco.startswith("3.") %}<h2>3. Dores e Necessidades</h2>
-        {% elif bloco.startswith("4.") %}<h2>4. Estilo de Comunicação</h2>
-        {% elif bloco.startswith("5.") %}<h2>5. Sugestões de Abordagem</h2>
-        {% elif is_email %}
+      {% if bloco.startswith("6.") %}
+        <div class="result-section">
           <h2>6. Modelos de Mensagem/Email</h2>
           <div class="email-block">{{ bloco | replace('\n', '<br>') | safe }}</div>
-        {% else %}
-          <h2>Detalhes</h2>
+        </div>
+      {% else %}
+        <div class="result-section">
+          {% if bloco.startswith("1.") %}
+            <h2>1. Persona Resumida</h2>
+          {% elif bloco.startswith("2.") %}
+            <h2>2. Objetivos e Metas</h2>
+          {% elif bloco.startswith("3.") %}
+            <h2>3. Dores e Necessidades</h2>
+          {% elif bloco.startswith("4.") %}
+            <h2>4. Estilo de Comunicação</h2>
+          {% elif bloco.startswith("5.") %}
+            <h2>5. Sugestões de Abordagem</h2>
+          {% else %}
+            <h2>Detalhes</h2>
+          {% endif %}
           <p>{{ bloco | replace('\n', '<br>') | safe }}</p>
-        {% endif %}
-      </div>
+        </div>
+      {% endif %}
     {% endfor %}
 
     <a href="/cliente" class="back-button">⬅ Voltar ao formulário</a>
