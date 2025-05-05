@@ -1,0 +1,46 @@
+<!-- templates/cliente.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎯 Mapeamento de Perfil de Cliente Ideal</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="dark-bg">
+  <div class="form-container">
+    <h1>🎯 Mapeamento de Perfil de Cliente Ideal</h1>
+    <p>Preencha as informações abaixo para gerar um perfil detalhado e sugestões de abordagem.</p>
+    <form method="post" action="/api/analisar-cliente">
+      <!-- Campos do formulário -->
+      <label>Segmento de atuação:</label>
+      <input type="text" name="segmento" required>
+
+      <label>Principais dores ou problemas do cliente:</label>
+      <textarea name="dores" required></textarea>
+
+      <label>Soluções que você oferece:</label>
+      <textarea name="solucoes" required></textarea>
+
+      <label>Perfil típico desse cliente:</label>
+      <textarea name="perfil" required></textarea>
+
+      <label>Objetivo com o mapeamento:</label>
+      <textarea name="objetivo" required></textarea>
+
+      <label>Fontes externas (site, redes sociais, perfil do cliente):</label>
+      <input type="text" name="fontes" placeholder="https://empresa.com / @perfil">
+
+      <label>Tipo de abordagem desejada:</label>
+      <select name="abordagem">
+        <option>Email de prospecção</option>
+        <option>Mensagem no LinkedIn</option>
+        <option>Roteiro de ligação</option>
+      </select>
+
+      <button type="submit">🚀 Gerar Perfil e Abordagem</button>
+    </form>
+    <a href="/menu" class="button-link">⬅️ Voltar ao Menu</a>
+  </div>
+</body>
+</html>
