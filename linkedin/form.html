@@ -1,1 +1,32 @@
+<!-- templates/linkedin.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Assistente LinkedIn</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body class="gradient-bg">
+  <div class="container">
+    <h1 class="title">🚀 Assistente de Otimização de LinkedIn</h1>
+    <p class="subtitle">Receba uma versão otimizada da sua bio e sugestões para sua seção de experiência profissional.</p>
 
+    <form method="post" action="/api/otimizar-linkedin" class="form">
+      <label for="nome">Nome completo:</label>
+      <input type="text" id="nome" name="nome" required />
+
+      <label for="cargo">Cargo atual:</label>
+      <input type="text" id="cargo" name="cargo" required />
+
+      <label for="resumo">Resumo profissional atual (seção "Sobre"):</label>
+      <textarea id="resumo" name="resumo" rows="6" required></textarea>
+
+      <label for="experiencia">Experiência profissional:</label>
+      <textarea id="experiencia" name="experiencia" rows="6" required></textarea>
+
+      <button type="submit">🔧 Gerar Sugestão de Bio</button>
+    </form>
+  </div>
+</body>
+</html>
