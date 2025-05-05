@@ -1,55 +1,74 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Perfil do Cliente</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resultado do Cliente Ideal</title>
   <link rel="stylesheet" href="/static/style.css">
   <style>
-    .resultado-box {
-      background: rgba(255, 255, 255, 0.03);
-      padding: 2rem;
-      border-radius: 1.25rem;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-      max-width: 1000px;
-      margin: 2rem auto;
-      color: #f1f1f1;
-      white-space: pre-wrap;
-      font-family: "Fira Code", monospace;
+    .result-container {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 30px 40px;
+      border-radius: 16px;
+      max-width: 900px;
+      width: 100%;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      margin: 40px auto;
+      color: #fff;
+    }
+    .result-title {
+      font-size: 26px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .result-section {
+      margin-bottom: 30px;
+    }
+    .result-section h2 {
+      color: #00c6ff;
+      font-size: 20px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #0072ff;
+      padding-bottom: 5px;
+    }
+    .result-section p, .result-section li {
+      font-size: 16px;
       line-height: 1.6;
     }
-
-    .btn-voltar {
-      background: linear-gradient(to right, #06beb6, #48b1bf);
-      border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-      margin-top: 1.5rem;
+    .result-section ul {
+      padding-left: 20px;
     }
-
-    .btn-voltar:hover {
-      opacity: 0.85;
+    .back-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 24px;
+      background: #0072ff;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
     }
   </style>
 </head>
-<body class="gradient-bg-dark">
-  <div class="container">
-    <h1 class="title">🎯 Perfil do Cliente</h1>
-    <p class="subtitle">Veja abaixo sua análise personalizada:</p>
+<body class="dark-gradient-bg">
+  <div class="result-container">
+    <h1 class="result-title">🎯 Resultado do Mapeamento</h1>
 
-    <div class="resultado-box">
-      {{ resultado }}
-    </div>
+    {% set partes = resultado.split("\n\n") %}
+    {% for bloco in partes %}
+      <div class="result-section">
+        {% if bloco.startswith("1.") %}<h2>1. Persona Resumida</h2>
+        {% elif bloco.startswith("2.") %}<h2>2. Objetivos e Metas</h2>
+        {% elif bloco.startswith("3.") %}<h2>3. Dores e Necessidades</h2>
+        {% elif bloco.startswith("4.") %}<h2>4. Estilo de Comunicação</h2>
+        {% elif bloco.startswith("5.") %}<h2>5. Sugestões de Abordagem</h2>
+        {% elif bloco.startswith("6.") %}<h2>6. Modelos de Mensagem/Email</h2>
+        {% else %}<h2>Detalhes</h2>{% endif %}
+        <p>{{ bloco | replace('\n', '<br>') | safe }}</p>
+      </div>
+    {% endfor %}
 
-    <div style="text-align: center;">
-      <a href="/menu">
-        <button class="btn-voltar">🔙 Voltar ao Menu</button>
-      </a>
-    </div>
+    <a href="/cliente" class="back-button">⬅ Voltar ao formulário</a>
   </div>
 </body>
 </html>
