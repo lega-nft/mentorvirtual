@@ -1,181 +1,126 @@
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, Request, Form
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from starlette.middleware.sessions import SessionMiddleware
 from openai import OpenAI
-import os
-import uuid
+import os, uuid
 
 app = FastAPI()
-app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET", "supersecret"))
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
 results_store = {}
-linkedin_store = {}
-cliente_store = {}
 
+# LOGIN
 @app.get("/")
-def root_redirect():
-    return RedirectResponse("/login")
-
-@app.get("/login")
-def login_form(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+def login(request: Request):
+    return templates.TemplateResponse("auth/login.html", {"request": request})
 
 @app.post("/login")
-def login_submit(request: Request, email: str = Form(...)):
-    request.session["user"] = email
-    return RedirectResponse("/home", status_code=302)
+def do_login(request: Request, email: str = Form(...)):
+    return RedirectResponse(url="/menu", status_code=303)
 
-@app.get("/logout")
-def logout(request: Request):
-    request.session.clear()
-    return RedirectResponse("/login")
+# DASHBOARD / MENU
+@app.get("/menu")
+def menu(request: Request):
+    return templates.TemplateResponse("menu/dashboard.html", {"request": request})
 
-@app.get("/home")
-def homepage(request: Request):
-    user = request.session.get("user")
-    if not user:
-        return RedirectResponse("/login")
-    return templates.TemplateResponse("menu.html", {"request": request, "user": user})
-
-@app.get("/perfil")
-def perfil_form(request: Request):
-    user = request.session.get("user")
-    if not user:
-        return RedirectResponse("/login")
-    return templates.TemplateResponse("formulario.html", {"request": request, "user": user})
+# MENTOR: ANÁLISE DE PERFIL
+@app.get("/mentor")
+def mentor_form(request: Request):
+    return templates.TemplateResponse("mentor/form.html", {"request": request})
 
 @app.post("/api/analisar")
-async def analisar(request: Request, nome: str = Form(...), objetivo: str = Form(...), experiencia: str = Form(...), habilidades: str = Form(...)):
+async def analisar(request: Request, nome: str = Form(...), objetivo: str = Form(...),
+                   experiencia: str = Form(...), habilidades: str = Form(...)):
     prompt = f"""
-Analise o seguinte perfil profissional com base nas informações fornecidas:
+Analise o seguinte perfil profissional:
 Nome: {nome}
-Objetivo profissional: {objetivo}
+Objetivo: {objetivo}
 Experiência: {experiencia}
 Habilidades: {habilidades}
-
-Forneça uma análise em 4 seções:
-1. Pontos fortes (marcados com bullet points)
-2. Áreas de melhoria
-3. Sugestões de desenvolvimento
-4. Feedback empático final
 """
-
     response = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[{"role": "user", "content": prompt}],
         max_tokens=1200
     )
-
     resultado = response.choices[0].message.content
     uid = str(uuid.uuid4())
     results_store[uid] = {"nome": nome, "resultado": resultado}
-    return RedirectResponse(url=f"/resultado?id={uid}", status_code=303)
+    return RedirectResponse(url=f"/mentor/resultado?id={uid}", status_code=303)
 
-@app.get("/resultado")
-async def resultado(request: Request, id: str):
+@app.get("/mentor/resultado")
+def mentor_resultado(request: Request, id: str):
     data = results_store.get(id)
-    if not data:
-        return templates.TemplateResponse("resultado.html", {"request": request, "nome": "Usuário", "resultado": "Nenhum resultado disponível."})
-    return templates.TemplateResponse("resultado.html", {"request": request, "nome": data['nome'], "resultado": data['resultado']})
+    nome = data["nome"] if data else "Usuário"
+    resultado = data["resultado"] if data else "Nenhum resultado disponível."
+    return templates.TemplateResponse("mentor/result.html", {"request": request, "nome": nome, "resultado": resultado})
 
+# LINKEDIN
 @app.get("/linkedin")
-async def linkedin_form(request: Request):
-    return templates.TemplateResponse("linkedin.html", {"request": request})
+def linkedin_form(request: Request):
+    return templates.TemplateResponse("linkedin/form.html", {"request": request})
 
-@app.post("/api/otimizar-linkedin")
-async def otimizar_linkedin(
-    request: Request,
-    nome: str = Form(...),
-    cargo: str = Form(...),
-    resumo: str = Form(...),
-    experiencia: str = Form(...)
-):
+@app.post("/api/linkedin")
+async def linkedin_result(request: Request, nome: str = Form(...), cargo: str = Form(...), resumo: str = Form(...)):
     prompt = f"""
-Aja como um consultor de LinkedIn. Otimize o seguinte perfil profissional com um tom persuasivo, estratégico e profissional. Não invente dados, apenas melhore o que for fornecido. Use linguagem atrativa.
-
+Melhore este resumo profissional para o LinkedIn:
 Nome: {nome}
 Cargo atual: {cargo}
-Resumo original: {resumo}
-Experiência profissional: {experiencia}
-
-Responda com:
-1. Uma nova versão otimizada da seção "Sobre" do LinkedIn.
-2. Sugestões de melhoria para a seção de "Experiência Profissional", considerando estrutura, resultados mensuráveis, palavras-chave e impacto.
+Resumo: {resumo}
 """
-
     response = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[{"role": "user", "content": prompt}],
         max_tokens=1000
     )
-
     resultado = response.choices[0].message.content
     uid = str(uuid.uuid4())
-    linkedin_store[uid] = {"nome": nome, "resultado": resultado}
-    return RedirectResponse(url=f"/linkedin-resultado?id={uid}", status_code=303)
+    results_store[uid] = {"resultado": resultado}
+    return RedirectResponse(url=f"/linkedin/resultado?id={uid}", status_code=303)
 
-@app.get("/linkedin-resultado")
-async def linkedin_resultado(request: Request, id: str):
-    data = linkedin_store.get(id)
-    if not data:
-        return templates.TemplateResponse("resultado.html", {"request": request, "nome": "Usuário", "resultado": "Nenhum resultado disponível."})
-    return templates.TemplateResponse("resultado.html", {"request": request, "nome": data['nome'], "resultado": data['resultado']})
+@app.get("/linkedin/resultado")
+def linkedin_resultado(request: Request, id: str):
+    resultado = results_store.get(id, {}).get("resultado", "Nenhum resultado disponível.")
+    return templates.TemplateResponse("linkedin/result.html", {"request": request, "resultado": resultado})
 
+# CLIENTE IDEAL
 @app.get("/cliente")
-async def cliente_form(request: Request):
-    return templates.TemplateResponse("cliente_perfil.html", {"request": request})
+def cliente_form(request: Request):
+    return templates.TemplateResponse("client/form.html", {"request": request})
 
-@app.post("/api/mapear-cliente")
-async def mapear_cliente(
-    request: Request,
-    segmento: str = Form(...),
-    problemas: str = Form(...),
-    solucao: str = Form(...),
-    perfil: str = Form(...),
-    objetivo: str = Form(...),
-    fontes: str = Form(""),
-    abordagem: str = Form("Email de prospecção")
-):
+@app.post("/api/cliente")
+async def cliente_result(request: Request,
+                         segmento: str = Form(...),
+                         dores: str = Form(...),
+                         solucoes: str = Form(...),
+                         perfil: str = Form(...),
+                         objetivo: str = Form(...),
+                         fontes: str = Form(""),
+                         abordagem: str = Form(...)):
     prompt = f"""
-Você é um especialista em estratégia de negócios e marketing. Com base nas informações abaixo, gere um perfil detalhado do cliente ideal, incluindo:
-
-1. Persona (nome fictício, idade, profissão)
-2. Objetivos e metas
-3. Dores e necessidades
-4. Estilo de comunicação
-5. Canais preferidos
-6. Comportamentos de compra
-7. Analise as fontes fornecidas: {fontes}
-8. Sugira formas estratégicas de abordar o cliente
-9. Gere um modelo no formato: {abordagem}
-
+Com base nos dados abaixo, crie um perfil ideal de cliente e sugestões de abordagem personalizada:
 Segmento: {segmento}
-Dores: {problemas}
-Soluções: {solucao}
+Dores: {dores}
+Soluções: {solucoes}
 Perfil típico: {perfil}
 Objetivo: {objetivo}
+Fontes externas: {fontes}
+Tipo de abordagem: {abordagem}
 """
-
     response = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[{"role": "user", "content": prompt}],
         max_tokens=1200
     )
-
     resultado = response.choices[0].message.content
     uid = str(uuid.uuid4())
-    cliente_store[uid] = {"resultado": resultado}
-    return RedirectResponse(url=f"/cliente-resultado?id={uid}", status_code=303)
+    results_store[uid] = {"resultado": resultado}
+    return RedirectResponse(url=f"/cliente/resultado?id={uid}", status_code=303)
 
-@app.get("/cliente-resultado")
-async def cliente_resultado(request: Request, id: str):
-    data = cliente_store.get(id)
-    if not data:
-        return templates.TemplateResponse("resultado.html", {"request": request, "nome": "Perfil do Cliente", "resultado": "Nenhum resultado disponível."})
-    return templates.TemplateResponse("resultado.html", {"request": request, "nome": "Perfil do Cliente", "resultado": data['resultado']})
+@app.get("/cliente/resultado")
+def cliente_resultado(request: Request, id: str):
+    resultado = results_store.get(id, {}).get("resultado", "Nenhum resultado disponível.")
+    return templates.TemplateResponse("client/result.html", {"request": request, "resultado": resultado})
