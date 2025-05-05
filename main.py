@@ -24,18 +24,17 @@ def login(request: Request):
 
 @app.post("/login")
 def do_login(request: Request, email: str = Form(...)):
-    # Simples login sem autenticação real
     return RedirectResponse("/menu", status_code=303)
 
 # --- Menu ---
 @app.get("/menu")
 def menu(request: Request):
-    return templates.TemplateResponse("menu/menu.html", {"request": request})
+    return templates.TemplateResponse("menu/index.html", {"request": request})
 
 # --- Mentor ---
 @app.get("/mentor")
 def mentor_form(request: Request):
-    return templates.TemplateResponse("mentor/formulario.html", {"request": request})
+    return templates.TemplateResponse("mentor/form.html", {"request": request})
 
 @app.post("/api/mentor")
 async def analisar_perfil(request: Request, nome: str = Form(...), objetivo: str = Form(...), experiencia: str = Form(...), habilidades: str = Form(...)):
@@ -65,9 +64,7 @@ Forneça uma análise em 4 seções:
 @app.get("/mentor/resultado")
 def mentor_resultado(request: Request, id: str):
     data = results_store.get(id)
-    if not data:
-        return templates.TemplateResponse("mentor/resultado.html", {"request": request, "nome": "Usuário", "resultado": "Nenhum resultado disponível."})
-    return templates.TemplateResponse("mentor/resultado.html", {"request": request, "nome": data['nome'], "resultado": data['resultado']})
+    return templates.TemplateResponse("mentor/resultado.html", {"request": request, "nome": data['nome'] if data else "Usuário", "resultado": data['resultado'] if data else "Nenhum resultado disponível."})
 
 # --- LinkedIn ---
 @app.get("/linkedin")
@@ -77,7 +74,7 @@ def linkedin_form(request: Request):
 @app.post("/api/linkedin")
 async def linkedin_otimizar(request: Request, nome: str = Form(...), cargo: str = Form(...), resumo: str = Form(...), experiencia: str = Form(...)):
     prompt = f"""
-Otimize a seção "Sobre" do LinkedIn com base nas seguintes informações:
+Otimize a seção \"Sobre\" do LinkedIn com base nas seguintes informações:
 Nome: {nome}
 Cargo atual: {cargo}
 Resumo atual: {resumo}
