@@ -1,59 +1,125 @@
-/* static/style.css */
-body {
+/* Reset básico */
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-  color: #ffffff;
 }
 
-.container {
-  max-width: 700px;
-  margin: 4rem auto;
-  background-color: rgba(255, 255, 255, 0.05);
-  padding: 2rem 2.5rem;
+/* Background gradiente escuro */
+body.dark-gradient-bg {
+  background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+  color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+}
+
+/* Container principal */
+.form-container {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 30px 40px;
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(12px);
+  max-width: 700px;
+  width: 100%;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
 }
 
-h1, h2 {
+/* Títulos */
+.form-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 12px;
   text-align: center;
-  margin-bottom: 1.2rem;
-  color: #ffffff;
 }
 
+.form-subtitle {
+  font-size: 16px;
+  color: #cccccc;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Labels e campos */
 label {
   display: block;
-  margin-top: 1rem;
+  margin-top: 20px;
+  margin-bottom: 6px;
   font-weight: 500;
-  color: #ddd;
+  color: #ffffff;
 }
 
 input, textarea, select {
   width: 100%;
-  margin-top: 0.3rem;
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
+  padding: 12px;
   border: none;
-  background-color: #1f1f1f;
-  color: #f0f0f0;
-  font-size: 1rem;
+  border-radius: 8px;
+  background: #1e2a35;
+  color: #ffffff;
+  font-size: 15px;
 }
 
+input::placeholder, textarea::placeholder {
+  color: #999999;
+}
+
+/* Botão */
 button {
-  margin-top: 2rem;
-  padding: 0.8rem 1.2rem;
-  background: linear-gradient(to right, #06b6d4, #3b82f6);
-  color: white;
-  font-weight: bold;
-  font-size: 1rem;
+  margin-top: 30px;
+  padding: 14px;
+  width: 100%;
+  font-size: 16px;
+  background: linear-gradient(to right, #00c6ff, #0072ff);
   border: none;
+  color: #fff;
   border-radius: 8px;
   cursor: pointer;
-  width: 100%;
+  font-weight: 600;
   transition: background 0.3s ease;
 }
 
 button:hover {
-  background: linear-gradient(to right, #3b82f6, #06b6d4);
+  background: linear-gradient(to right, #0072ff, #00c6ff);
+}
+
+/* Spinner overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Spinner */
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #0072ff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+/* Animação */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 25px 20px;
+  }
+
+  .form-title {
+    font-size: 22px;
+  }
 }
