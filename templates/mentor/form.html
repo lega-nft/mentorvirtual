@@ -1,1 +1,24 @@
-
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Mentor Virtual</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="gradient-bg">
+  <div class="container">
+    <h1 class="title">Mentor Virtual 🧠</h1>
+    <form method="post" action="/api/analisar" class="form">
+      <label>Nome completo:</label>
+      <input type="text" name="nome" required>
+      <label>Objetivo profissional:</label>
+      <textarea name="objetivo" required></textarea>
+      <label>Resumo da experiência:</label>
+      <textarea name="experiencia" required></textarea>
+      <label>Habilidades técnicas e soft skills:</label>
+      <textarea name="habilidades" required></textarea>
+      <button type="submit">Gerar Análise</button>
+    </form>
+  </div>
+</body>
+</html>
