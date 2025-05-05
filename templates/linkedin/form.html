@@ -1,1 +1,22 @@
-
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Otimizar LinkedIn</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="gradient-bg">
+  <div class="container">
+    <h1 class="title">🚀 Assistente de LinkedIn</h1>
+    <form method="post" action="/api/linkedin" class="form">
+      <label>Nome completo:</label>
+      <input type="text" name="nome" required>
+      <label>Cargo atual:</label>
+      <input type="text" name="cargo" required>
+      <label>Resumo profissional (seção "Sobre"):</label>
+      <textarea name="resumo" rows="6" required></textarea>
+      <button type="submit">🔧 Gerar Sugestão</button>
+    </form>
+  </div>
+</body>
+</html>
