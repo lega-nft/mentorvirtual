@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🎯 Mapeamento de Cliente Ideal</title>
-  <link rel="stylesheet" href="/static/style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapeamento de Perfil do Cliente Ideal</title>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body class="dark-gradient-bg">
   <div class="form-container">
     <h1 class="form-title">🎯 Mapeamento de Perfil de Cliente Ideal</h1>
     <p class="form-subtitle">Preencha as informações abaixo para gerar um perfil detalhado e sugestões de abordagem.</p>
-    
-    <form method="post" action="/api/cliente">
+
+    <form method="post" action="/api/cliente" class="form">
       <label for="segmento">Segmento de atuação:</label>
       <input type="text" id="segmento" name="segmento" required />
 
@@ -30,30 +30,15 @@
       <label for="fontes">Fontes externas (site, redes sociais, perfil do cliente):</label>
       <input type="text" id="fontes" name="fontes" placeholder="https://empresa.com / @cliente" />
 
-      <label for="abordagem">Tipo de abordagem desejada:</label>
-      <select name="abordagem" id="abordagem">
+      <label for="tipo_abordagem">Tipo de abordagem desejada:</label>
+      <select id="tipo_abordagem" name="tipo_abordagem">
         <option value="Email de prospecção">Email de prospecção</option>
-        <option value="Mensagem no LinkedIn">Mensagem no LinkedIn</option>
-        <option value="Contato por telefone">Contato por telefone</option>
-        <option value="Apresentação comercial">Apresentação comercial</option>
+        <option value="Mensagem no WhatsApp">Mensagem no WhatsApp</option>
+        <option value="Texto para ligação">Texto para ligação</option>
       </select>
 
       <button type="submit">🚀 Gerar Perfil e Abordagem</button>
     </form>
   </div>
-
-  <!-- Spinner de carregamento -->
-  <div id="loading" class="loading-overlay" style="display:none;">
-    <div class="spinner"></div>
-  </div>
-
-  <script>
-    const form = document.querySelector("form");
-    const loading = document.getElementById("loading");
-
-    form.addEventListener("submit", () => {
-      loading.style.display = "flex";
-    });
-  </script>
 </body>
 </html>
