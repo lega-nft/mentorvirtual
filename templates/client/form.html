@@ -1,34 +1,59 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Mapeamento de Cliente</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎯 Mapeamento de Cliente Ideal</title>
+  <link rel="stylesheet" href="/static/style.css" />
 </head>
-<body class="gradient-bg">
-  <div class="container">
-    <h1 class="title">🎯 Mapeamento de Cliente Ideal</h1>
-    <form method="post" action="/api/cliente" class="form">
-      <label>Segmento de atuação:</label>
-      <input name="segmento" required>
-      <label>Principais dores ou problemas:</label>
-      <textarea name="dores" required></textarea>
-      <label>Soluções que você oferece:</label>
-      <textarea name="solucoes" required></textarea>
-      <label>Perfil típico do cliente:</label>
-      <textarea name="perfil" required></textarea>
-      <label>Objetivo com o mapeamento:</label>
-      <textarea name="objetivo" required></textarea>
-      <label>Fontes externas:</label>
-      <input name="fontes" placeholder="https://empresa.com / perfil @cliente">
-      <label>Tipo de abordagem desejada:</label>
-      <select name="abordagem">
-        <option>Email de prospecção</option>
-        <option>Mensagem LinkedIn</option>
-        <option>Apresentação comercial</option>
+<body class="dark-gradient-bg">
+  <div class="form-container">
+    <h1 class="form-title">🎯 Mapeamento de Perfil de Cliente Ideal</h1>
+    <p class="form-subtitle">Preencha as informações abaixo para gerar um perfil detalhado e sugestões de abordagem.</p>
+    
+    <form method="post" action="/api/cliente">
+      <label for="segmento">Segmento de atuação:</label>
+      <input type="text" id="segmento" name="segmento" required />
+
+      <label for="dores">Principais dores ou problemas do cliente:</label>
+      <textarea id="dores" name="dores" rows="3" required></textarea>
+
+      <label for="solucoes">Soluções que você oferece:</label>
+      <textarea id="solucoes" name="solucoes" rows="3" required></textarea>
+
+      <label for="perfil">Perfil típico desse cliente:</label>
+      <textarea id="perfil" name="perfil" rows="3" required></textarea>
+
+      <label for="objetivo">Objetivo com o mapeamento:</label>
+      <textarea id="objetivo" name="objetivo" rows="3" required></textarea>
+
+      <label for="fontes">Fontes externas (site, redes sociais, perfil do cliente):</label>
+      <input type="text" id="fontes" name="fontes" placeholder="https://empresa.com / @cliente" />
+
+      <label for="abordagem">Tipo de abordagem desejada:</label>
+      <select name="abordagem" id="abordagem">
+        <option value="Email de prospecção">Email de prospecção</option>
+        <option value="Mensagem no LinkedIn">Mensagem no LinkedIn</option>
+        <option value="Contato por telefone">Contato por telefone</option>
+        <option value="Apresentação comercial">Apresentação comercial</option>
       </select>
+
       <button type="submit">🚀 Gerar Perfil e Abordagem</button>
     </form>
   </div>
+
+  <!-- Spinner de carregamento -->
+  <div id="loading" class="loading-overlay" style="display:none;">
+    <div class="spinner"></div>
+  </div>
+
+  <script>
+    const form = document.querySelector("form");
+    const loading = document.getElementById("loading");
+
+    form.addEventListener("submit", () => {
+      loading.style.display = "flex";
+    });
+  </script>
 </body>
 </html>
