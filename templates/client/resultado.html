@@ -1,16 +1,55 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Perfil do Cliente</title>
   <link rel="stylesheet" href="/static/style.css">
+  <style>
+    .resultado-box {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 2rem;
+      border-radius: 1.25rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      max-width: 1000px;
+      margin: 2rem auto;
+      color: #f1f1f1;
+      white-space: pre-wrap;
+      font-family: "Fira Code", monospace;
+      line-height: 1.6;
+    }
+
+    .btn-voltar {
+      background: linear-gradient(to right, #06beb6, #48b1bf);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 1.5rem;
+    }
+
+    .btn-voltar:hover {
+      opacity: 0.85;
+    }
+  </style>
 </head>
-<body class="gradient-bg dark-mode">
+<body class="gradient-bg-dark">
   <div class="container">
     <h1 class="title">🎯 Perfil do Cliente</h1>
     <p class="subtitle">Veja abaixo sua análise personalizada:</p>
-    <pre class="output-box">{{ resultado }}</pre>
-    <a href="/menu"><button>⬅ Voltar ao Menu</button></a>
+
+    <div class="resultado-box">
+      {{ resultado }}
+    </div>
+
+    <div style="text-align: center;">
+      <a href="/menu">
+        <button class="btn-voltar">🔙 Voltar ao Menu</button>
+      </a>
+    </div>
   </div>
 </body>
 </html>
